@@ -1,0 +1,223 @@
+<!-- [yhc] 글래스모피즘 퍼센트 카드 -->
+<div class="yhc-stats-wrap">
+
+  <!-- 카드 1 -->
+  <div class="yhc-stat-card">
+    <svg class="yhc-progress-ring" viewBox="0 0 200 200">
+      <circle class="yhc-progress-bg" cx="100" cy="100" r="96"></circle>
+      <circle class="yhc-progress-bar" cx="100" cy="100" r="96" data-percent="100"></circle>
+    </svg>
+    <div class="yhc-stat-content">
+      <div class="yhc-stat-number">
+        <span class="yhc-count" data-target="354">0</span>%
+      </div>
+      <div class="yhc-stat-label">증가</div>
+    </div>
+    <div class="yhc-stat-desc">NK 세포 활성 변화율</div>
+  </div>
+
+  <!-- 카드 2 -->
+  <div class="yhc-stat-card">
+    <svg class="yhc-progress-ring" viewBox="0 0 200 200">
+      <circle class="yhc-progress-bg" cx="100" cy="100" r="96"></circle>
+      <circle class="yhc-progress-bar" cx="100" cy="100" r="96" data-percent="100"></circle>
+    </svg>
+    <div class="yhc-stat-content">
+      <div class="yhc-stat-number">
+        <span class="yhc-count" data-target="211">0</span>%
+      </div>
+      <div class="yhc-stat-label">증가</div>
+    </div>
+<div class="yhc-stat-desc">사이토카인 IFN-<span style="font-family: Georgia, 'Times New Roman', serif; font-style: italic;">γ</span> 변화율</div>  </div>
+
+</div>
+
+<style>
+/* ========================================
+   [yhc] 글래스모피즘 퍼센트 카드
+   ======================================== */
+
+/* 전체 래퍼 */
+.yhc-stats-wrap {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-end !important;
+  gap: 120px !important;
+  padding: 60px 20px 60px !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
+/* 글래스 카드 */
+.yhc-stat-card {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: rgba(180, 180, 180, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  text-align: center;
+}
+
+/* SVG 프로그레스 링 */
+.yhc-progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+/* 프로그레스 배경 */
+.yhc-progress-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 2;
+}
+
+/* 프로그레스 바 + 글로우 */
+.yhc-progress-bar {
+  fill: none;
+  stroke: rgba(255, 255, 255, 1);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 603;
+  stroke-dashoffset: 603;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 1))
+          drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))
+          drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
+}
+
+/* 내부 콘텐츠 */
+.yhc-stat-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 숫자 + % - 정확한 중앙 */
+.yhc-stat-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* 증가 텍스트 - 숫자 아래 */
+.yhc-stat-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 35px;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* 하단 설명 텍스트 */
+.yhc-stat-desc {
+  position: absolute;
+  bottom: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+/* ========================================
+   [yhc] 반응형 모바일
+   ======================================== */
+@media (max-width: 768px) {
+  .yhc-stats-wrap {
+    gap: 70px !important;
+    padding: 40px 20px 70px !important;
+  }
+
+  .yhc-stat-card {
+    width: 180px;
+    height: 180px;
+  }
+
+  .yhc-stat-number {
+    font-size: 42px;
+  }
+
+  .yhc-stat-label {
+    font-size: 15px;
+    margin-top: 28px;
+  }
+
+  .yhc-stat-desc {
+    font-size: 13px;
+    bottom: -30px;
+  }
+}
+</style>
+
+<script>
+/* ========================================
+   [yhc] 카운트업 + 원형 프로그레스 애니메이션
+   ======================================== */
+(function() {
+  var cards = document.querySelectorAll('.yhc-stat-card');
+
+  function animateCard(card) {
+    var countEl = card.querySelector('.yhc-count');
+    var progressBar = card.querySelector('.yhc-progress-bar');
+    
+    var target = parseInt(countEl.getAttribute('data-target'), 10);
+    var percent = parseFloat(progressBar.getAttribute('data-percent'));
+    var duration = 2000;
+    var start = null;
+    var circumference = 2 * Math.PI * 96;
+
+    function step(timestamp) {
+      if (!start) start = timestamp;
+      var progress = Math.min((timestamp - start) / duration, 1);
+      var ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      
+      countEl.textContent = Math.floor(ease * target);
+      var offset = circumference - (ease * percent / 100) * circumference;
+      progressBar.style.strokeDashoffset = offset;
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        countEl.textContent = target;
+        progressBar.style.strokeDashoffset = circumference - (percent / 100) * circumference;
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        animateCard(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  cards.forEach(function(card) {
+    observer.observe(card);
+  });
+})();
+</script>
