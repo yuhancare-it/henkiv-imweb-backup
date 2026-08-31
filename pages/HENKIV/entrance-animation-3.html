@@ -1,0 +1,112 @@
+<!-- 3번 섹션 - 녹용 선별 / 좌우 교차 슬라이드인 -->
+<style>
+  /* 1행 텍스트 - 왼쪽에서 등장 */
+  #w202604081f2819ceed68e .widget_text_wrap {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #w202604081f2819ceed68e.henkiv-slide-in .widget_text_wrap {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* 1행 이미지 - 오른쪽에서 등장 */
+  #w20260408575925d461b09 .img_wrap {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #w20260408575925d461b09.henkiv-slide-in .img_wrap {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* 2행 이미지 - 왼쪽에서 등장 */
+  #w20260408c5f9ef1299bcb .img_wrap {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #w20260408c5f9ef1299bcb.henkiv-slide-in .img_wrap {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* 2행 텍스트 - 오른쪽에서 등장 */
+  #w20260408c7b42e77fb907 .widget_text_wrap {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #w20260408c7b42e77fb907.henkiv-slide-in .widget_text_wrap {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* 반응형 - 모바일에서는 아래→위로 대체 */
+  @media screen and (max-width: 768px) {
+    #w202604081f2819ceed68e .widget_text_wrap,
+    #w20260408575925d461b09 .img_wrap,
+    #w20260408c5f9ef1299bcb .img_wrap,
+    #w20260408c7b42e77fb907 .widget_text_wrap {
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    #w202604081f2819ceed68e.henkiv-slide-in .widget_text_wrap,
+    #w20260408575925d461b09.henkiv-slide-in .img_wrap,
+    #w20260408c5f9ef1299bcb.henkiv-slide-in .img_wrap,
+    #w20260408c7b42e77fb907.henkiv-slide-in .widget_text_wrap {
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+(function () {
+
+  /* 1행 요소 - 함께 등장 */
+  var row1 = [
+    document.querySelector('#w202604081f2819ceed68e'), /* 텍스트 왼쪽 */
+    document.querySelector('#w20260408575925d461b09')  /* 이미지 오른쪽 */
+  ];
+
+  /* 2행 요소 - 함께 등장 */
+  var row2 = [
+    document.querySelector('#w20260408c5f9ef1299bcb'), /* 이미지 왼쪽 */
+    document.querySelector('#w20260408c7b42e77fb907')  /* 텍스트 오른쪽 */
+  ];
+
+  function triggerRow(els, delay) {
+    els.forEach(function (el) {
+      if (!el) return;
+      setTimeout(function () {
+        el.classList.add('henkiv-slide-in');
+      }, delay || 0);
+    });
+  }
+
+  /* 1행 Observer */
+  var observer1 = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      triggerRow(row1, 100); /* 0.1s 딜레이 */
+      observer1.disconnect();
+    });
+  }, { threshold: 0.2 });
+
+  /* 2행 Observer */
+  var observer2 = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      triggerRow(row2, 100); /* 0.1s 딜레이 */
+      observer2.disconnect();
+    });
+  }, { threshold: 0.2 });
+
+  /* 각 행의 첫 번째 요소를 기준으로 관찰 */
+  if (row1[0]) observer1.observe(row1[0]);
+  if (row2[0]) observer2.observe(row2[0]);
+
+})();
+</script>
