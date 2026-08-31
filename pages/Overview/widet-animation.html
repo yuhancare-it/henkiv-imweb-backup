@@ -1,0 +1,67 @@
+<!-- 영상 펼쳐지기 + 하단 이미지 슬라이드인 효과 (수정본) -->
+<style>
+/* ===== 메인 영상 펼쳐지는 효과 ===== */
+/* 영상 위젯은 .img_wrap이 아닌 .img_box 사용 */
+#w20260414907170bb98255 .img_box {
+    clip-path: inset(0 50% 0 50%);
+    transition: clip-path 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+#w20260414907170bb98255.henkiv-reveal .img_box {
+    clip-path: inset(0 0% 0 0%);
+}
+
+/* ===== 하단 이미지 슬라이드인 효과 (오른쪽 → 왼쪽) ===== */
+#w20260410a9e79511fd482 {
+    opacity: 0;
+    transform: translateX(80px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+#w20260410a9e79511fd482.henkiv-slide-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ===== 반응형 ===== */
+@media screen and (max-width: 768px) {
+    #w20260414907170bb98255 .img_box {
+        transition: clip-path 1s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    #w20260410a9e79511fd482 {
+        transform: translateX(40px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+}
+</style>
+
+<script>
+(function() {
+    /* 메인 영상 위젯 */
+    var mainVideo = document.querySelector('#w20260414907170bb98255');
+    /* 하단 이미지 위젯 */
+    var bottomImage = document.querySelector('#w20260410a9e79511fd482');
+
+    /* 페이지 로드 시 이미 붙어있는 클래스 제거 (초기 상태 보장) */
+    if (mainVideo) mainVideo.classList.remove('henkiv-reveal');
+    if (bottomImage) bottomImage.classList.remove('henkiv-slide-in');
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add(
+                    entry.target.id === 'w20260414907170bb98255'
+                    ? 'henkiv-reveal'
+                    : 'henkiv-slide-in'
+                );
+            }
+        });
+    }, {
+        threshold: 0.3
+    });
+
+    if (mainVideo) observer.observe(mainVideo);
+    if (bottomImage) observer.observe(bottomImage);
+})();
+</script>
