@@ -1,0 +1,175 @@
+<style>
+  /* ===== 기존 owl-dots 숨김 ===== */
+  #visual_s20260421f4c9749a55cd6 .owl-dots {
+    display: none !important;
+  }
+
+  /* ===== 커스텀 인디케이터 ===== */
+  .yhc-indicator {
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 60px;
+    pointer-events: none;
+  }
+
+  .yhc-ind-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    pointer-events: all;
+  }
+
+  /* 텍스트 */
+  .yhc-ind-label {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.45);
+    transition: color 0.4s ease;
+    white-space: nowrap;
+  }
+
+  .yhc-ind-item.yhc-ind-on .yhc-ind-label {
+    color: rgba(255, 255, 255, 1);
+  }
+
+  /* 게이지 바 */
+  .yhc-ind-bar {
+    width: 120px;
+    height: 1.5px;
+    background: rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .yhc-ind-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    width: 0%;
+    background: rgba(255, 255, 255, 1);
+    transition: width 0s;
+  }
+
+  /* 활성 바 - 자동재생 시간에 맞게 채워짐 */
+  .yhc-ind-item.yhc-ind-on .yhc-ind-bar::after {
+    width: 100%;
+    transition: width 4s linear; /* 슬라이더 자동재생 시간에 맞춰주세요 */
+  }
+
+  /* 모바일 */
+  @media (max-width: 768px) {
+    .yhc-indicator { gap: 24px; bottom: 24px; }
+    .yhc-ind-label { font-size: 12px; }
+    .yhc-ind-bar { width: 70px; }
+  }
+</style>
+
+<script>
+(function () {
+
+  var LABELS = ['01. Ingredient', '02. Product', '03. Technology'];
+
+  var POLL_MS  = 150;
+  var MAX_WAIT = 8000;
+  var waited   = 0;
+  var indItems = [];
+
+  /* ===== 인디케이터 생성 ===== */
+  function buildIndicator(container, $owl) {
+    var wrap = document.createElement('div');
+    wrap.className = 'yhc-indicator';
+
+    LABELS.forEach(function (label, i) {
+      var item = document.createElement('div');
+      item.className = 'yhc-ind-item';
+
+      var labelEl = document.createElement('div');
+      labelEl.className = 'yhc-ind-label';
+      labelEl.textContent = label;
+
+      var bar = document.createElement('div');
+      bar.className = 'yhc-ind-bar';
+
+      item.appendChild(labelEl);
+      item.appendChild(bar);
+
+      /* 클릭 시 해당 슬라이드로 이동 */
+      item.addEventListener('click', function () {
+        var dots = document.querySelectorAll('#visual_s20260421f4c9749a55cd6 .owl-dot');
+        if (dots[i]) dots[i].click();
+      });
+
+      wrap.appendChild(item);
+      indItems.push(item);
+    });
+
+    container.appendChild(wrap);
+  }
+
+  /* ===== 활성화 ===== */
+  function activate(idx) {
+    indItems.forEach(function (item, i) {
+      item.classList.remove('yhc-ind-on');
+    });
+    /* 약간 딜레이 후 on 추가 (bar 애니메이션 리셋용) */
+    setTimeout(function () {
+      if (indItems[idx]) indItems[idx].classList.add('yhc-ind-on');
+    }, 20);
+  }
+
+  /* ===== dot에서 현재 인덱스 ===== */
+  function getActiveIdx(section) {
+    var dots = section.querySelectorAll('.owl-dot');
+    var idx = 0;
+    dots.forEach(function (dot, i) {
+      if (dot.classList.contains('active')) idx = i;
+    });
+    return idx;
+  }
+
+  /* ===== 폴링 ===== */
+  var poll = setInterval(function () {
+    waited += POLL_MS;
+    if (waited >= MAX_WAIT) { clearInterval(poll); return; }
+
+    var section = document.getElementById('visual_s20260421f4c9749a55cd6');
+    if (!section) return;
+
+    var dots = section.querySelectorAll('.owl-dot');
+    if (!dots.length) return;
+
+    clearInterval(poll);
+
+    var container = section.querySelector('.visual_area') || section;
+    buildIndicator(container);
+
+    /* 초기 활성화 */
+    activate(getActiveIdx(section));
+
+    /* MutationObserver로 dot.active 감지 */
+    var dotsWrap = section.querySelector('.owl-dots');
+    if (!dotsWrap) return;
+
+    var observer = new MutationObserver(function () {
+      activate(getActiveIdx(section));
+    });
+
+    observer.observe(dotsWrap, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['class']
+    });
+
+  }, POLL_MS);
+
+})();
+</script>
