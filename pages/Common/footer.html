@@ -1,0 +1,92 @@
+<style>
+/* ==========================================
+   [hkv] 푸터
+========================================== */
+
+.hkv-footer {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 40px 60px;
+}
+
+.hkv-footer-inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 정보 줄 */
+.hkv-footer-row {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+}
+
+/* 구분자 */
+.hkv-footer-row span.hkv-sep {
+  margin: 0 6px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* 저작권 */
+.hkv-footer-copy {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 6px;
+  letter-spacing: 0.01em;
+}
+
+/* ==========================================
+   반응형
+========================================== */
+@media (max-width: 768px) {
+  .hkv-footer {
+    padding: 16px 0; /* 상하좌우 패딩 전체 제거 */
+  }
+
+  .hkv-footer-row {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45); /* 살짝 어둡게 */
+  }
+
+  .hkv-footer-copy {
+    color: rgba(255, 255, 255, 0.25); /* 살짝 어둡게 */
+  }
+
+  .hkv-footer-row .hkv-sep {
+    display: none;
+  }
+
+  .hkv-footer-row .hkv-item {
+    display: block;
+    line-height: 2;
+  }
+}
+</style>
+
+<!-- ========== 푸터 ========== -->
+<div class="hkv-footer">
+  <div class="hkv-footer-inner">
+
+    <div class="hkv-footer-row">
+      <span class="hkv-item">대표이사 : 손정수</span>
+      <span class="hkv-sep">|</span>
+      <span class="hkv-item">사업자등록번호 : 182-86-00679</span>
+      <span class="hkv-sep">|</span>
+      <span class="hkv-item">주소 : 서울특별시 강서구 마곡중앙로 172 바이오 이노베이션 파크 6층</span>
+    </div>
+
+    <div class="hkv-footer-row">
+      <span class="hkv-item">대표번호 : 1670-6527</span>
+      <span class="hkv-sep">|</span>
+      <span class="hkv-item">FAX : 02-2078-5499</span>
+      <span class="hkv-sep">|</span>
+      <span class="hkv-item">이메일 : yuhancare@yuhancare.com</span>
+    </div>
+
+    <div class="hkv-footer-copy">© 2026 HENKIV. All rights reserved.</div>
+
+  </div>
+</div>
