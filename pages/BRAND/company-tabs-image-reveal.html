@@ -1,0 +1,232 @@
+<style>
+  .yhc-mask-text {
+    position: relative;
+    width: 100%;
+    height: 210px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .yhc-mask-text::before {
+    content: 'YUHANCARE';
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: clamp(60px, 15.8vw, 190px);
+    font-weight: 900;
+    line-height: 210px;
+    text-align: center;
+    letter-spacing: -2px;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: var(--yhc-mask-img, url('https://cdn.imweb.me/upload/S2026032611699b7fcf760/097250f0b6e79.jpg'));
+    background-size: cover;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .yhc-zoom-circle {
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: 50% 50%;
+    clip-path: circle(0% at 50% 50%);
+    transition: none;
+    z-index: 1;
+  }
+
+  .yhc-zoom-circle.yhc-zc-on {
+    clip-path: circle(100% at 50% 50%);
+  }
+
+  .yhc-zc1 { background-image: url('https://cdn.imweb.me/upload/S2026032611699b7fcf760/097250f0b6e79.jpg'); }
+  .yhc-zc2 { background-image: url('https://cdn.imweb.me/upload/S2026032611699b7fcf760/3d90ff8b4200f.jpg'); }
+  .yhc-zc3 { background-image: url('https://cdn.imweb.me/upload/S2026032611699b7fcf760/cda54e296e87b.jpg'); }
+
+  .yhc-conbox { text-align: center; }
+
+  .yhc-tab-box {
+    display: block;
+    font-size: 0;
+    text-align: center;
+    margin: 50px 0;
+  }
+
+  .yhc-brand-tab {
+    display: inline-block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #181818;
+    background: none;
+    border: 1px solid #181818;
+    border-radius: 29px;
+    width: 180px;
+    height: 58px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .yhc-brand-tab.active {
+    background: #181818;
+    color: #fff;
+  }
+
+  .yhc-matchbox {
+    text-align: center;
+    margin-bottom: 40px;
+    min-height: 52px;
+  }
+
+  .yhc-matchtext {
+    font-size: 18px;
+    color: #181818;
+    line-height: 26px;
+    display: none;
+  }
+
+  .yhc-matchtext.active { display: block; }
+
+  .yhc-linkbox { text-align: center; }
+
+  .yhc-linkbox-a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #181818;
+    text-decoration: none;
+  }
+
+  .yhc-linkbox-a i { font-size: 18px; }
+
+  @media (max-width: 768px) {
+    .yhc-mask-text { height: 180px; }
+    .yhc-mask-text::before { height: 180px; line-height: 180px; font-size: 13vw; }
+    .yhc-brand-tab { width: 100px; height: 44px; font-size: 18px; margin: 0 5px; }
+    .yhc-matchtext { font-size: 14px; }
+    .yhc-linkbox-a { font-size: 18px; }
+  }
+</style>
+
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<div class="yhc-sec02">
+
+  <div class="yhc-mask-text" id="yhcMaskText">
+    <span class="yhc-zoom-circle yhc-zc1"></span>
+    <span class="yhc-zoom-circle yhc-zc2"></span>
+    <span class="yhc-zoom-circle yhc-zc3"></span>
+  </div>
+
+  <div class="yhc-conbox">
+    <div class="yhc-tab-box">
+      <button class="yhc-brand-tab active" data-tab="0">기업소개</button>
+      <button class="yhc-brand-tab" data-tab="1">사업소개</button>
+      <button class="yhc-brand-tab" data-tab="2">기업문화</button>
+    </div>
+
+    <div class="yhc-matchbox">
+      <div class="yhc-matchtext active">
+        천연물의 과학적 연구를 토대로 고객의 삶에 새로운 의식과<br>
+        가치 있는 경험을 전하는 유한건강생활을 소개합니다.
+      </div>
+      <div class="yhc-matchtext">
+        먹고 입고 바르는 라이프스타일의 모든 부분에서<br>
+        진정성 있는 가치와 본질에 집중하여 연구 활동을 이어갑니다.
+      </div>
+      <div class="yhc-matchtext">
+        우리는 브랜드 원칙에 공감하며 행동으로 실천합니다.<br>
+        유한건강생활의 문화와 사고의 공간을 소개합니다.
+      </div>
+    </div>
+
+    <div class="yhc-linkbox">
+      <!-- target="_blank" 추가 → 새 탭으로 열림 -->
+      <a class="yhc-linkbox-a" href="https://www.yuhancare.com/" id="yhcLinkboxA" target="_blank">
+        바로가기 <i class="fa-solid fa-chevron-right"></i>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+var DATA = [
+    { img: 'https://cdn.imweb.me/upload/S2026032611699b7fcf760/097250f0b6e79.jpg', href: 'https://www.yuhancare.com/slogan' },
+    { img: 'https://cdn.imweb.me/upload/S2026032611699b7fcf760/3d90ff8b4200f.jpg', href: 'https://www.yuhancare.com/brand'  },
+    { img: 'https://cdn.imweb.me/upload/S2026032611699b7fcf760/cda54e296e87b.jpg', href: 'https://www.yuhancare.com/talent' }
+];
+
+  var MASK_HOLD       = 800;
+  var REVEAL_DURATION = 1000;
+
+  var maskEl      = document.getElementById('yhcMaskText');
+  var circles     = document.querySelectorAll('.yhc-zoom-circle');
+  var tabs        = document.querySelectorAll('.yhc-brand-tab');
+  var matches     = document.querySelectorAll('.yhc-matchtext');
+  var linkEl      = document.getElementById('yhcLinkboxA');
+  var cur         = 0;
+  var revealTimer = null;
+
+  function activate(idx) {
+    cur = idx;
+
+    if (revealTimer) {
+      clearTimeout(revealTimer);
+      revealTimer = null;
+    }
+
+    /* 탭 + 텍스트 즉시 전환 */
+    tabs.forEach(function (t) { t.classList.remove('active'); });
+    tabs[idx].classList.add('active');
+    matches.forEach(function (m) { m.classList.remove('active'); });
+    matches[idx].classList.add('active');
+
+    /* 바로가기 링크 탭별 교체 */
+    if (linkEl) linkEl.setAttribute('href', DATA[idx].href);
+
+    /* 모든 circle 즉시 리셋 */
+    circles.forEach(function (c) {
+      c.style.transition = 'none';
+      c.classList.remove('yhc-zc-on');
+    });
+
+    /* ::before 이미지 교체 */
+    maskEl.style.setProperty('--yhc-mask-img', 'url(' + DATA[idx].img + ')');
+
+    /* MASK_HOLD 후 reveal */
+    revealTimer = setTimeout(function () {
+      revealTimer = null;
+      circles[idx].style.transition = 'clip-path ' + (REVEAL_DURATION / 1000) + 's ease-out';
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          circles[idx].classList.add('yhc-zc-on');
+        });
+      });
+    }, MASK_HOLD);
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var idx = parseInt(tab.getAttribute('data-tab'));
+      if (idx === cur) return;
+      activate(idx);
+    });
+  });
+
+  activate(0);
+})();
+</script>
