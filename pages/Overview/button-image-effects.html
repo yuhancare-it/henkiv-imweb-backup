@@ -1,0 +1,196 @@
+<!-- [yhc] 제품 이미지 3장 순환 슬라이더 + 버튼/이미지 커스텀 -->
+<style>
+/* =============================================
+   [yhc] VIEW MORE 버튼 커스텀
+   ============================================= */
+
+/* 버튼 기본 스타일 오버라이드 */
+.btn_381229d6cb86e.btn-default {
+  color: #e8f0eb !important;
+  border: 1px solid rgba(180, 220, 190, 0.45) !important;
+  border-radius: 2px !important;
+  padding: 14px 36px !important;
+  letter-spacing: 0.18em !important;
+  font-size: 13px !important;
+  transition: 
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    color 0.4s ease !important;
+}
+
+/* 호버: glow 효과 */
+.btn_381229d6cb86e.btn-default:hover {
+  border-color: rgba(200, 240, 210, 0.75) !important;
+  color: #ffffff !important;
+  box-shadow: 
+    0 0 12px rgba(140, 210, 160, 0.35),
+    0 0 28px rgba(120, 190, 140, 0.2),
+    inset 0 0 10px rgba(180, 230, 190, 0.08) !important;
+}
+
+/* =============================================
+   [yhc] 이미지 슬라이더
+   ============================================= */
+
+/* 이미지 위젯 기준점 확보 */
+#w20260410d6ac8c7027a4a .widget.image {
+  position: relative;
+}
+
+/* 슬라이더 래퍼 */
+.yhc-prod-slider-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* 슬라이드 이미지 공통 */
+.yhc-prod-slider-wrap .yhc-prod-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center top;
+  opacity: 0;
+  transform: scale(1.03);
+  /* 슬라이더 이미지 글로우 효과 */
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
+  transition:
+    opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 활성 슬라이드 */
+.yhc-prod-slider-wrap .yhc-prod-slide.yhc-prod-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 퇴장 슬라이드 */
+.yhc-prod-slider-wrap .yhc-prod-slide.yhc-prod-leaving {
+  opacity: 0;
+  transform: scale(0.97);
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =============================================
+     [yhc] 설정
+     ============================================= */
+  var YHC_PROD_CFG = {
+    slides: [
+      'https://cdn.imweb.me/thumbnail/20260410/b35fc119303c2.png',
+      'https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/products/immune2.svg',
+      'https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/products/immune3.svg'
+    ],
+    interval: 3500,
+    leaveDuration: 1800,
+    /* 등장 애니메이션 완료 대기 시간 (ms)
+       — 이미지(0s) + 블러 페이드인(2.2s) + 여유 0.3s */
+    revealWait: 2500
+  };
+
+  /* =============================================
+     [yhc] 대상 위젯
+     ============================================= */
+  var yhcImgWidget = document.getElementById('w20260410d6ac8c7027a4a');
+  if (!yhcImgWidget) return;
+
+  var yhcWidgetInner = yhcImgWidget.querySelector('.widget.image');
+  if (!yhcWidgetInner) return;
+
+  /* 기존 원본 이미지 숨기기 */
+  var yhcOrigImg = yhcWidgetInner.querySelector('._img_box img');
+  if (yhcOrigImg) yhcOrigImg.style.opacity = '0';
+
+  /* =============================================
+     [yhc] 슬라이더 DOM 생성
+     ============================================= */
+  var yhcSliderWrap = document.createElement('div');
+  yhcSliderWrap.className = 'yhc-prod-slider-wrap';
+
+  var yhcSlides = [];
+  YHC_PROD_CFG.slides.forEach(function (src, idx) {
+    var img = document.createElement('img');
+    img.className = 'yhc-prod-slide' + (idx === 0 ? ' yhc-prod-active' : '');
+    img.src = src;
+    img.alt = '헨키브 이뮨 ' + (idx + 1);
+    yhcSliderWrap.appendChild(img);
+    yhcSlides.push(img);
+  });
+
+  yhcWidgetInner.appendChild(yhcSliderWrap);
+
+  /* =============================================
+     [yhc] 슬라이더 로직
+     ============================================= */
+  var yhcCurrent = 0;
+  var yhcTotal = yhcSlides.length;
+  var yhcTimer = null;
+
+  function yhcNext() {
+    var prevIdx = yhcCurrent;
+    yhcSlides[prevIdx].classList.add('yhc-prod-leaving');
+    yhcSlides[prevIdx].classList.remove('yhc-prod-active');
+
+    yhcCurrent = (yhcCurrent + 1) % yhcTotal;
+    yhcSlides[yhcCurrent].classList.add('yhc-prod-active');
+
+    var prevRef = prevIdx;
+    setTimeout(function () {
+      yhcSlides[prevRef].classList.remove('yhc-prod-leaving');
+    }, YHC_PROD_CFG.leaveDuration);
+  }
+
+  function yhcStart() {
+    if (yhcTimer) return;
+    yhcTimer = setInterval(yhcNext, YHC_PROD_CFG.interval);
+  }
+
+  function yhcStop() {
+    if (yhcTimer) { clearInterval(yhcTimer); yhcTimer = null; }
+  }
+
+  /* =============================================
+     [yhc] 탭 비활성 처리
+     ============================================= */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { yhcStop(); } else { yhcStart(); }
+  });
+
+  /* =============================================
+     [yhc] 등장 애니메이션 완료 감지 후 슬라이더 시작
+     — yhc-prod-visible 클래스가 붙으면 등장 시작된 것
+     — revealWait만큼 대기 후 슬라이더 가동
+     ============================================= */
+  var yhcObserver = new MutationObserver(function (mutations) {
+    mutations.forEach(function (m) {
+      if (m.type === 'attributes' &&
+          m.attributeName === 'class' &&
+          yhcImgWidget.classList.contains('yhc-prod-visible')) {
+
+        /* 등장 애니메이션 완료 대기 후 슬라이더 시작 */
+        setTimeout(function () {
+          yhcStart();
+        }, YHC_PROD_CFG.revealWait);
+
+        /* 감지 종료 */
+        yhcObserver.disconnect();
+      }
+    });
+  });
+
+  yhcObserver.observe(yhcImgWidget, { attributes: true });
+
+})();
+</script>
