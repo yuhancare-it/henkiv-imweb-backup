@@ -1,0 +1,260 @@
+<style>
+/* ===== 스티키 스크롤 래퍼 ===== */
+.henkiv-sticky-outer {
+    position: relative;
+    height: 200vh;
+}
+.henkiv-sticky-inner {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* ===== 제목 텍스트 페이드인 ===== */
+#s20260408849d1677e98f2 #w202604088684ca4f18849 {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+#s20260408849d1677e98f2 #w202604088684ca4f18849.henkiv-fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== 영상 컨테이너 (영상1 + 영상2 겹침) ===== */
+.henkiv-video-wrap {
+    position: relative;
+    width: 100%;
+    height: 703px;
+    background: #000;
+    overflow: hidden;
+}
+@media screen and (max-width: 768px) {
+    .henkiv-video-wrap {
+        height: 56.25vw; /* 16:9 비율 */
+    }
+}
+
+/* ===== 공통 iframe 스타일 ===== */
+.henkiv-video-wrap iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
+}
+
+/* ===== 영상2 오버레이 (원형 확장) ===== */
+.henkiv-video-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 5;
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.henkiv-video-overlay.henkiv-circle-expand {
+    clip-path: circle(75% at 50% 50%);
+}
+.henkiv-video-overlay iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+}
+
+/* ===== 하단 설명 텍스트 ===== */
+#s20260408849d1677e98f2 #w20260408615c8c82834c8 {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+#s20260408849d1677e98f2 #w20260408615c8c82834c8.henkiv-fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== 텍스트 전환 페이드 ===== */
+#s20260408849d1677e98f2 #w20260408615c8c82834c8 .text-table {
+    transition: opacity 0.5s ease;
+}
+#s20260408849d1677e98f2 #w20260408615c8c82834c8.henkiv-text-switching .text-table {
+    opacity: 0;
+}
+
+/* ===== 스크롤 화살표 ===== */
+.henkiv-scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    opacity: 0.6;
+    transition: opacity 0.5s ease;
+    text-align: center;
+}
+.henkiv-scroll-indicator.henkiv-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.henkiv-scroll-arrow {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(45deg);
+    animation: henkivBounce 1.5s infinite;
+}
+@keyframes henkivBounce {
+    0%, 100% { transform: rotate(45deg) translateY(0); }
+    50% { transform: rotate(45deg) translateY(8px); }
+}
+
+/* ===== 반응형 ===== */
+@media screen and (max-width: 768px) {
+    .henkiv-sticky-outer { height: 180vh; }
+    #s20260408849d1677e98f2 #w202604088684ca4f18849,
+    #s20260408849d1677e98f2 #w20260408615c8c82834c8 {
+        transform: translateY(20px);
+    }
+    .henkiv-video-overlay {
+        transition: clip-path 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+}
+</style>
+
+<script>
+    (function() {
+    /* ===== 섹션 범위 한정 ===== */
+    var section = document.querySelector('#s20260408849d1677e98f2');
+    if (!section) return;
+
+    var titleText  = section.querySelector('#w202604088684ca4f18849');
+    var stickyAnchor = section.querySelector('#w20260408ccedf717c163d');
+    var videoWidget  = section.querySelector('#w202604135544843703401');
+    var descText     = section.querySelector('#w20260408615c8c82834c8');
+
+    if (!videoWidget || !descText || !stickyAnchor) return;
+
+    /* ===== 초기 클래스 제거 ===== */
+    if (titleText) titleText.classList.remove('henkiv-fade-in');
+    descText.classList.remove('henkiv-fade-in');
+
+    /* ===== 텍스트 내용 정의 ===== */
+    var texts = [
+        '뉴질랜드 남 알프스 전용 농장 인간의 손길이 닿지 않은 6,000만 평에 달하는<br>광활한 대지에서 사슴들은 자신을 둘러싼 대자연을 만끽하며 성장합니다.',
+        '행복하게 자란 사슴, 뉴질랜드 정부의 엄격한 동물복지 원칙을 준수하여 얻은<br>녹용 중 SUPER A등급 이상의 녹용을 사용합니다.'
+    ];
+
+    /* ===== 아임웹 Vimeo 위젯 영역을 직접 iframe으로 교체 ===== */
+    var imgBox = videoWidget.querySelector('.img_box, ._img_box');
+    if (imgBox) {
+        /* 기존 내용 제거 후 새 비디오 래퍼 삽입 */
+        imgBox.innerHTML = '';
+        imgBox.style.cssText = 'position:relative; height:703px; overflow:hidden; padding:0;';
+
+        /* 영상1 iframe */
+        var iframe1 = document.createElement('iframe');
+        iframe1.src = 'https://player.vimeo.com/video/1182564293?autoplay=1&autopause=0&controls=0&loop=1&muted=1&transparent=0&app_id=122963';
+        iframe1.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+        iframe1.setAttribute('title', 'henkiv video 1');
+        iframe1.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; border:none;';
+        imgBox.appendChild(iframe1);
+
+        /* 영상2 오버레이 */
+        var overlay = document.createElement('div');
+        overlay.className = 'henkiv-video-overlay';
+
+        var iframe2 = document.createElement('iframe');
+        iframe2.src = 'https://player.vimeo.com/video/1182847782?autoplay=1&autopause=0&controls=0&loop=1&muted=1&transparent=0&app_id=122963';
+        iframe2.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+        iframe2.setAttribute('title', 'henkiv video 2');
+
+        overlay.appendChild(iframe2);
+        imgBox.appendChild(overlay);
+    }
+
+    /* ===== 스티키 래퍼 구성 ===== */
+    var outerWrap = document.createElement('div');
+    outerWrap.className = 'henkiv-sticky-outer';
+    var innerWrap = document.createElement('div');
+    innerWrap.className = 'henkiv-sticky-inner';
+
+    var anchorRow    = stickyAnchor.closest('.doz_row');
+    var videoRow     = videoWidget.closest('.doz_row');
+    var spacerAfterVideo = videoRow.nextElementSibling;
+    var descRow      = descText.closest('.doz_row');
+
+    var parentContainer = anchorRow.parentNode;
+    parentContainer.insertBefore(outerWrap, anchorRow);
+
+    innerWrap.appendChild(anchorRow);
+    innerWrap.appendChild(videoRow);
+    if (spacerAfterVideo && spacerAfterVideo !== descRow) {
+        innerWrap.appendChild(spacerAfterVideo);
+    }
+    innerWrap.appendChild(descRow);
+    outerWrap.appendChild(innerWrap);
+
+    /* ===== 스크롤 화살표 ===== */
+    var indicator = document.createElement('div');
+    indicator.className = 'henkiv-scroll-indicator';
+    indicator.innerHTML = '<div class="henkiv-scroll-arrow"></div>';
+    innerWrap.appendChild(indicator);
+
+    /* ===== 초기 텍스트 설정 ===== */
+    var textArea = descText.querySelector('.text-table div');
+    if (textArea) {
+        textArea.innerHTML = '<p style="text-align:center; line-height:2;"><span style="font-size:20px; font-weight:400;">' + texts[0] + '</span></p>';
+    }
+
+    /* ===== 상태 관리 ===== */
+    var currentState = 0;
+    var isSwitching  = false;
+    var overlay2 = imgBox ? imgBox.querySelector('.henkiv-video-overlay') : null;
+
+    /* ===== 스크롤 전환 ===== */
+    function onScroll() {
+        var outerRect = outerWrap.getBoundingClientRect();
+        var scrollableDistance = outerWrap.offsetHeight - innerWrap.offsetHeight;
+        if (scrollableDistance <= 0) return;
+
+        var progress = Math.max(0, Math.min(1, -outerRect.top / scrollableDistance));
+
+        if (progress > 0.45 && currentState === 0 && !isSwitching) switchTo(1);
+        if (progress < 0.35 && currentState === 1 && !isSwitching) switchTo(0);
+
+        indicator.classList.toggle('henkiv-hidden', progress > 0.2);
+    }
+
+    function switchTo(newState) {
+        isSwitching = true;
+        currentState = newState;
+
+        /* 영상2 원형 확장/축소 */
+        if (overlay2) overlay2.classList.toggle('henkiv-circle-expand', newState === 1);
+
+        /* 텍스트 페이드아웃 → 교체 → 페이드인 */
+        descText.classList.add('henkiv-text-switching');
+        setTimeout(function() {
+            if (textArea) {
+                textArea.innerHTML = '<p style="text-align:center; line-height:2;"><span style="font-size:20px; font-weight:400;">' + texts[newState] + '</span></p>';
+            }
+            descText.classList.remove('henkiv-text-switching');
+            isSwitching = false;
+        }, 500);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    /* ===== 진입 애니메이션 ===== */
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) entry.target.classList.add('henkiv-fade-in');
+        });
+    }, { threshold: 0.3 });
+
+    if (titleText) observer.observe(titleText);
+    observer.observe(descText);
+})();
+</script>
