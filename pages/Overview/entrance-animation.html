@@ -1,0 +1,75 @@
+<!-- [yhc] 제품 섹션 - 블러 페이드인 등장 애니메이션 -->
+<style>
+/* 애니메이션 대상 초기 상태 */
+#w20260410d6ac8c7027a4a,
+#w202604101b1219a48fa7c,
+#w202604102c821b3655c15 {
+  opacity: 0;
+  filter: blur(20px);
+  transform: translateY(30px);
+  will-change: opacity, filter, transform;
+  backface-visibility: hidden;
+  transition:
+    opacity   2.2s cubic-bezier(0.22, 1, 0.36, 1),
+    filter    2.2s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 2.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 이미지 - delay 0s */
+#w20260410d6ac8c7027a4a { transition-delay: 0s; }
+
+/* 텍스트 - delay 0.5s */
+#w202604101b1219a48fa7c { transition-delay: 0.5s; }
+
+/* 버튼 - delay 1.0s */
+#w202604102c821b3655c15 { transition-delay: 1.0s; }
+
+/* 등장 완료 상태 */
+#w20260410d6ac8c7027a4a.yhc-prod-visible,
+#w202604101b1219a48fa7c.yhc-prod-visible,
+#w202604102c821b3655c15.yhc-prod-visible {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0);
+}
+
+/* 모바일 - blur 제거 및 속도 조정 */
+@media screen and (max-width: 768px) {
+  #w20260410d6ac8c7027a4a,
+  #w202604101b1219a48fa7c,
+  #w202604102c821b3655c15 {
+    filter: none;
+    transition-duration: 1.6s;
+  }
+}
+</style>
+
+<script>
+(function () {
+  var yhcProdTargets = [
+    'w20260410d6ac8c7027a4a',
+    'w202604101b1219a48fa7c',
+    'w202604102c821b3655c15'
+  ];
+
+  var yhcTriggerEl = document.getElementById('w20260410d6ac8c7027a4a');
+  if (!yhcTriggerEl) return;
+
+  var yhcProdObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+
+      yhcProdTargets.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.add('yhc-prod-visible');
+      });
+
+      yhcProdObserver.unobserve(entry.target);
+    });
+  }, {
+    threshold: 0.2
+  });
+
+  yhcProdObserver.observe(yhcTriggerEl);
+})();
+</script>
