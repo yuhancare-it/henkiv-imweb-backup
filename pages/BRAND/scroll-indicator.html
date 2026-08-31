@@ -1,0 +1,128 @@
+<!-- ===== SCROLL 인디케이터 (비주얼 섹션 우측 하단) ===== -->
+<style>
+  /* ===== 스크롤 인디케이터 컨테이너 ===== */
+  .yhc-scroll-indicator {
+    position: absolute;
+    right: 40px;
+    bottom: 0; /* 하단 끝까지 */
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    pointer-events: none;
+  }
+
+  /* ===== SCROLL 텍스트 (세로, 굵게) ===== */
+  .yhc-scroll-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: rgba(255, 255, 255, 1);
+    text-transform: uppercase;
+  }
+
+  /* ===== 세로 라인 트랙 ===== */
+  .yhc-scroll-line {
+    width: 1.5px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.25);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ===== 움직이는 라인 (반복 애니메이션) ===== */
+  .yhc-scroll-line::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    animation: yhcScrollDown 2s ease-in-out infinite;
+  }
+
+  /* ===== 라인 애니메이션 ===== */
+  @keyframes yhcScrollDown {
+    0% {
+      top: -100%;
+    }
+    40% {
+      top: 0%;
+    }
+    80% {
+      top: 100%;
+    }
+    100% {
+      top: 100%;
+    }
+  }
+
+  /* ===== 모바일 ===== */
+  @media (max-width: 768px) {
+    .yhc-scroll-indicator {
+      right: 16px;
+      gap: 10px;
+    }
+    .yhc-scroll-text {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+    }
+    .yhc-scroll-line {
+      height: 50px;
+    }
+  }
+</style>
+
+<script>
+(function () {
+  /* ===== 설정 ===== */
+  var POLL_MS  = 150;
+  var MAX_WAIT = 8000;
+  var waited   = 0;
+
+  /* ===== 스크롤 인디케이터 생성 ===== */
+  function buildScrollIndicator(container) {
+    /* 중복 생성 방지 */
+    if (container.querySelector('.yhc-scroll-indicator')) return;
+
+    container.style.position = 'relative';
+
+    var wrap = document.createElement('div');
+    wrap.className = 'yhc-scroll-indicator';
+
+    /* SCROLL 텍스트 */
+    var text = document.createElement('div');
+    text.className = 'yhc-scroll-text';
+    text.textContent = 'SCROLL';
+
+    /* 세로 라인 */
+    var line = document.createElement('div');
+    line.className = 'yhc-scroll-line';
+
+    wrap.appendChild(text);
+    wrap.appendChild(line);
+    container.appendChild(wrap);
+  }
+
+  /* ===== 폴링: 비주얼 섹션 로드 대기 ===== */
+  var poll = setInterval(function () {
+    waited += POLL_MS;
+    if (waited >= MAX_WAIT) { clearInterval(poll); return; }
+
+    var section = document.getElementById('visual_s20260421f4c9749a55cd6');
+    if (!section) return;
+
+    var container = section.querySelector('.visual_area') || section;
+    if (!container) return;
+
+    clearInterval(poll);
+    buildScrollIndicator(container);
+
+  }, POLL_MS);
+})();
+</script>
