@@ -1,0 +1,91 @@
+<!-- [yhc] 글래스 원형 카드 3개 -->
+<div class="yhc-glass-wrap">
+
+  <div class="yhc-glass-circle">
+    <span class="yhc-glass-text">피로</span>
+  </div>
+
+  <div class="yhc-glass-circle">
+    <span class="yhc-glass-text">운동수행능력</span>
+  </div>
+
+  <div class="yhc-glass-circle">
+    <span class="yhc-glass-text">키성장</span>
+  </div>
+
+</div>
+
+<style>
+/* ========================================
+   [yhc] 글래스 원형 3개 래퍼
+   ======================================== */
+.yhc-glass-wrap {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 60px 40px;
+  flex-wrap: wrap;
+}
+
+/* ========================================
+   [yhc] 글래스 원형 카드
+   ======================================== */
+.yhc-glass-circle {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  /* 글래스모피즘 */
+  background: rgba(40, 40, 40, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   [yhc] 원형 내 텍스트
+   ======================================== */
+.yhc-glass-text {
+  font-size: 24px;
+  font-weight: 400;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+/* ========================================
+   [yhc] 반응형
+   ======================================== */
+@media (max-width: 1024px) {
+  .yhc-glass-circle {
+    width: 240px;
+    height: 240px;
+  }
+
+  .yhc-glass-text {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .yhc-glass-wrap {
+    gap: 20px;
+    padding: 40px 20px;
+  }
+
+  .yhc-glass-circle {
+    width: 170px;
+    height: 170px;
+  }
+
+  .yhc-glass-text {
+    font-size: 17px;
+  }
+}
+</style>
