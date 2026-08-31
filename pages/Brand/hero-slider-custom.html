@@ -1,0 +1,169 @@
+<style>
+  /* ===== 기존 슬라이드 텍스트 숨김 ===== */
+  #visual_s20260421f4c9749a55cd6 .text._text_wrap {
+    display: none !important;
+  }
+
+  /* ===== 오버레이 ===== */
+  .yhc-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  /* ===== 제목 래퍼 ===== */
+  .yhc-title-wrap {
+    position: relative;
+    width: 100%;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+/* ===== 제목 페이드 ===== */
+.yhc-title {
+  position: absolute;
+  width: 100%;
+  font-size: clamp(36px, 6.5vw, 96px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  text-align: center;
+  opacity: 0;
+  filter: blur(20px);
+  transition: opacity 1.2s ease-in-out, filter 1.2s ease-in-out;
+  pointer-events: none;
+}
+
+.yhc-title.yhc-on {
+  opacity: 1;
+  filter: blur(0px);
+}
+
+  /* ===== 슬로건 ===== */
+  .yhc-slogan {
+    font-size: 18px;
+    font-weight:400;
+    color: #fff;
+    line-height: 1.6;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  /* ===== 모바일 ===== */
+  @media (max-width: 768px) {
+    .yhc-title { font-size: clamp(28px, 8vw, 48px); }
+    .yhc-title-wrap { height: 80px; }
+    .yhc-slogan { font-size: 13px; }
+  }
+</style>
+
+<script>
+(function () {
+
+  var TITLES = [
+    '세상에 없던 원료',
+    '세상을 위한 제품',
+    '세상을 바꾸는 기술'
+  ];
+  var SLOGAN = '천연물의 가치를 발견해 건강한 세상을 만들어 갑니다.';
+
+  var POLL_MS  = 150;
+  var MAX_WAIT = 8000;
+  var waited   = 0;
+  var titleEls = [];
+
+  /* ===== 오버레이 생성 ===== */
+  function buildOverlay(container) {
+    container.style.position = 'relative';
+
+    var overlay = document.createElement('div');
+    overlay.className = 'yhc-overlay';
+
+    var titleWrap = document.createElement('div');
+    titleWrap.className = 'yhc-title-wrap';
+
+    TITLES.forEach(function (text) {
+      var el = document.createElement('div');
+      el.className = 'yhc-title';
+      el.textContent = text;
+      titleWrap.appendChild(el);
+      titleEls.push(el);
+    });
+
+    var sloganEl = document.createElement('div');
+    sloganEl.className = 'yhc-slogan';
+    sloganEl.textContent = SLOGAN;
+
+    overlay.appendChild(titleWrap);
+    overlay.appendChild(sloganEl);
+    container.appendChild(overlay);
+  }
+
+  /* ===== 제목 활성화 ===== */
+  function activate(idx) {
+    titleEls.forEach(function (el, i) {
+      if (i === idx) {
+        el.classList.add('yhc-on');
+      } else {
+        el.classList.remove('yhc-on');
+      }
+    });
+  }
+
+  /* ===== dot에서 현재 인덱스 가져오기 ===== */
+  function getActiveIdx(section) {
+    var dots = section.querySelectorAll('.owl-dot');
+    var idx = 0;
+    dots.forEach(function (dot, i) {
+      if (dot.classList.contains('active')) idx = i;
+    });
+    return idx;
+  }
+
+  /* ===== 폴링: owl-dot 로드 대기 ===== */
+  var poll = setInterval(function () {
+    waited += POLL_MS;
+    if (waited >= MAX_WAIT) { clearInterval(poll); return; }
+
+    var section = document.getElementById('visual_s20260421f4c9749a55cd6');
+    if (!section) return;
+
+    var dots = section.querySelectorAll('.owl-dot');
+    if (!dots.length) return;
+
+    clearInterval(poll);
+
+    /* 오버레이 생성 */
+    var container = section.querySelector('.visual_area') || section;
+    buildOverlay(container);
+
+    /* 초기 활성화 */
+    activate(getActiveIdx(section));
+
+    /* MutationObserver로 dot.active 변화 감지 */
+    var dotsWrap = section.querySelector('.owl-dots');
+    if (!dotsWrap) return;
+
+    var observer = new MutationObserver(function () {
+      activate(getActiveIdx(section));
+    });
+
+    observer.observe(dotsWrap, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['class']
+    });
+
+  }, POLL_MS);
+
+})();
+</script>
