@@ -1,0 +1,38 @@
+<!-- 1번 헤더 섹션 - 우측 텍스트 아래→위 페이드인 (페이지 로드 즉시) -->
+<style>
+  /* 텍스트 위젯 내 p 태그 초기 숨김 */
+  #w20260408f605437e1a6a8 .widget_text_wrap p {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* 등장 상태 */
+  #w20260408f605437e1a6a8 .widget_text_wrap p.hk-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 반응형 */
+  @media screen and (max-width: 768px) {
+    #w20260408f605437e1a6a8 .widget_text_wrap p {
+      transition-duration: 0.8s;
+    }
+  }
+</style>
+
+<script>
+(function () {
+
+  /* 텍스트 위젯 내 p 태그 전체 */
+  var targets = document.querySelectorAll('#w20260408f605437e1a6a8 .widget_text_wrap p');
+
+  /* 페이지 로드 즉시 순차 등장 */
+  targets.forEach(function (el, i) {
+    setTimeout(function () {
+      el.classList.add('hk-visible');
+    }, 100 + i * 300); /* 0.1s 시작 후 0.3s 간격 순차 등장 */
+  });
+
+})();
+</script>
