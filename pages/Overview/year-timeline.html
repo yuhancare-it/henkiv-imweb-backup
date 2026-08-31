@@ -1,0 +1,391 @@
+<!-- [yhc] 타임라인 섹션 -->
+<div class="yhc-tl-wrap">
+
+  <!-- 상단: 원형 + 텍스트 -->
+  <div class="yhc-tl-top">
+    <div class="yhc-tl-circle">
+      <img src="https://cdn.imweb.me/upload/S20260326c3090126d17d5/6bdb0a30c69f8.png" class="yhc-tl-img active" data-index="0">
+      <img src="https://cdn.imweb.me/upload/S20260326c3090126d17d5/7487a1bdfaa5a.png" class="yhc-tl-img" data-index="1">
+      <img src="https://cdn.imweb.me/upload/S20260326c3090126d17d5/64a2a0c383539.png" class="yhc-tl-img" data-index="2">
+    </div>
+    <div class="yhc-tl-text-wrap">
+      <div class="yhc-tl-text active" data-index="0">
+        <div class="yhc-tl-year-label">2017</div>
+        <div class="yhc-tl-desc">뉴질랜드 왕립연구소<br>공동 연구 MOU 체결</div>
+      </div>
+      <div class="yhc-tl-text" data-index="1">
+        <div class="yhc-tl-year-label">2024</div>
+        <div class="yhc-tl-desc">국내 최초 식약처 인정<br>면역기능성 녹용</div>
+      </div>
+      <div class="yhc-tl-text" data-index="2">
+        <div class="yhc-tl-year-label">2026</div> 
+        <div class="yhc-tl-desc">헨키브 이뮨 출시</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 하단: 타임라인 바 -->
+  <div class="yhc-tl-bar">
+    <div class="yhc-tl-timeline-row">
+      <div class="yhc-tl-line-left"></div>
+      <div class="yhc-tl-years">
+
+        <!-- 2017 -->
+        <div class="yhc-tl-year-item active" data-index="0">
+          <div class="yhc-tl-deer-slot">
+            <img src="https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/deer1.svg" class="yhc-tl-deer yhc-tl-deer-odd active">
+            <img src="https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/deer2.svg" class="yhc-tl-deer yhc-tl-deer-even">
+          </div>
+          <span class="yhc-tl-year" data-index="0">2017</span>
+        </div>
+
+        <!-- 2024 -->
+        <div class="yhc-tl-year-item" data-index="1">
+          <div class="yhc-tl-deer-slot">
+            <img src="https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/deer1.svg" class="yhc-tl-deer yhc-tl-deer-odd">
+            <img src="https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/deer2.svg" class="yhc-tl-deer yhc-tl-deer-even">
+          </div>
+          <span class="yhc-tl-year" data-index="1">2024</span>
+        </div>
+
+        <!-- 2026 -->
+        <div class="yhc-tl-year-item" data-index="2">
+          <div class="yhc-tl-deer-slot">
+            <img src="https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/deer1.svg" class="yhc-tl-deer yhc-tl-deer-odd">
+            <img src="https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/deer2.svg" class="yhc-tl-deer yhc-tl-deer-even">
+          </div>
+          <span class="yhc-tl-year" data-index="2">2026</span>
+        </div>
+
+      </div>
+      <div class="yhc-tl-line-right"></div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+/* ========================================
+   [yhc] 타임라인 전체 래퍼
+   ======================================== */
+.yhc-tl-wrap {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5vw 0;
+  overflow: hidden;
+}
+
+/* ========================================
+   [yhc] 상단 영역
+   ======================================== */
+.yhc-tl-top {
+  position: relative;
+  width: 100%;
+  height: 18vw;
+  display: flex;
+  align-items: center;
+  margin-bottom: -0.5vw;
+}
+
+/* 원형 이미지 */
+.yhc-tl-circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14vw;
+  height: 14vw;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.25),
+    0 4px 15px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* 이미지 블러→선명 */
+.yhc-tl-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: blur(8px);
+  transform: scale(1.05);
+  transition: opacity 0.6s ease, filter 0.6s ease, transform 0.6s ease;
+}
+
+.yhc-tl-img.active {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
+
+/* 텍스트 래퍼 */
+.yhc-tl-text-wrap {
+  position: absolute;
+  left: calc(50% + 8vw);
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 12vw;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* 개별 텍스트 */
+.yhc-tl-text {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.yhc-tl-text.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 연도 라벨 */
+.yhc-tl-year-label {
+  font-size: 2.8vw;
+  font-weight: 700;
+  color: #222222;
+  line-height: 1;
+  margin-bottom: 0.4vw;
+  letter-spacing: -0.03em;
+}
+
+/* 설명 */
+.yhc-tl-desc {
+  font-size: 1vw;
+  font-weight: 400;
+  color: #181818;
+  line-height: 1.8;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* ========================================
+   [yhc] 하단 타임라인 바
+   ======================================== */
+.yhc-tl-bar {
+  position: relative;
+  width: 100%;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* 타임라인 가로 행 */
+.yhc-tl-timeline-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 1vw;
+}
+
+/* 좌우 선 */
+.yhc-tl-line-left,
+.yhc-tl-line-right {
+  flex: 1;
+  height: 2px;
+  background-color: #333333;
+  margin-bottom: 1.2vw;
+}
+
+/* 연도 아이템 */
+.yhc-tl-years {
+  display: flex;
+  align-items: flex-end;
+  gap: 4vw;
+  padding: 0 1vw;
+  flex-shrink: 0;
+}
+
+.yhc-tl-year-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0vw;
+  position: relative;
+}
+
+/* ========================================
+   [yhc] 사슴 슬롯
+   ======================================== */
+.yhc-tl-deer-slot {
+  position: relative;
+  width: 6vw;
+  height: 6vw;
+}
+
+/* 사슴 이미지 */
+.yhc-tl-deer {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  filter: blur(6px) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  transition: opacity 0.8s ease, filter 0.8s ease;
+}
+
+.yhc-tl-year-item.active .yhc-tl-deer.active {
+  opacity: 1;
+  filter: blur(0) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* 연도 텍스트 */
+.yhc-tl-year {
+  font-size: 2.4vw;
+  font-weight: 700;
+  color: #888888;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  display: block;
+}
+
+.yhc-tl-year-item.active .yhc-tl-year {
+  color: #222222;
+}
+
+/* ========================================
+   [yhc] 등장 애니메이션
+   ======================================== */
+.yhc-tl-circle.yhc-tl-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0s;
+}
+
+.yhc-tl-text-wrap.yhc-tl-visible {
+  opacity: 1;
+  transform: translateY(-50%);
+  transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0.45s;
+}
+
+.yhc-tl-bar.yhc-tl-visible {
+  opacity: 1;
+  transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0.9s;
+}
+
+/* ========================================
+   [yhc] 모바일 대응
+   ======================================== */
+@media (max-width: 480px) {
+  .yhc-tl-year-label  { font-size: 5vw; }
+  .yhc-tl-desc        { font-size: 2.8vw; }
+  .yhc-tl-year        { font-size: 5.5vw; }
+  .yhc-tl-circle      { width: 28vw; height: 28vw; }
+  .yhc-tl-top         { height: 32vw; }
+  .yhc-tl-text-wrap   { left: calc(50% + 15vw); }
+  .yhc-tl-deer-slot   { width: 8vw; height: 8vw; }
+  .yhc-tl-years       { gap: 5vw; }
+}
+</style>
+
+<script>
+/* ========================================
+   [yhc] 타임라인 전환 - 클릭 + 자동(4초)
+   ======================================== */
+(function() {
+  var INTERVAL = 4000;
+  var current = 0;
+  var total = 3;
+  var timer = null;
+  var currentDeerClass = 'yhc-tl-deer-odd';
+
+  var yearItems = document.querySelectorAll('.yhc-tl-year-item');
+  var years     = document.querySelectorAll('.yhc-tl-year');
+  var imgs      = document.querySelectorAll('.yhc-tl-img');
+  var texts     = document.querySelectorAll('.yhc-tl-text');
+
+  function goTo(index) {
+    yearItems[current].classList.remove('active');
+    imgs[current].classList.remove('active');
+    texts[current].classList.remove('active');
+
+    var prevDeers = yearItems[current].querySelectorAll('.yhc-tl-deer');
+    prevDeers.forEach(function(d) { d.classList.remove('active'); });
+
+    current = index;
+    yearItems[current].classList.add('active');
+    imgs[current].classList.add('active');
+    texts[current].classList.add('active');
+
+    currentDeerClass = (currentDeerClass === 'yhc-tl-deer-odd')
+      ? 'yhc-tl-deer-even'
+      : 'yhc-tl-deer-odd';
+
+    var nextDeer = yearItems[current].querySelector('.' + currentDeerClass);
+    if (nextDeer) nextDeer.classList.add('active');
+  }
+
+  function startAuto() {
+    timer = setInterval(function() {
+      goTo((current + 1) % total);
+    }, INTERVAL);
+  }
+
+  function resetAuto() {
+    clearInterval(timer);
+    startAuto();
+  }
+
+  years.forEach(function(el) {
+    el.addEventListener('click', function() {
+      var index = parseInt(el.getAttribute('data-index'), 10);
+      if (index === current) return;
+      goTo(index);
+      resetAuto();
+    });
+  });
+
+  var initDeer = yearItems[0].querySelector('.yhc-tl-deer-odd');
+  if (initDeer) initDeer.classList.add('active');
+
+  startAuto();
+})();
+
+/* ========================================
+   [yhc] 스크롤 등장 애니메이션
+   ======================================== */
+(function() {
+  var targets = [
+    document.querySelector('.yhc-tl-circle'),
+    document.querySelector('.yhc-tl-text-wrap'),
+    document.querySelector('.yhc-tl-bar')
+  ];
+
+  var trigger = document.querySelector('.yhc-tl-wrap');
+  if (!trigger) return;
+
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      targets.forEach(function(el) {
+        if (el) el.classList.add('yhc-tl-visible');
+      });
+      obs.unobserve(entry.target);
+    });
+  }, { threshold: 0.2 });
+
+  obs.observe(trigger);
+})();
+</script>
