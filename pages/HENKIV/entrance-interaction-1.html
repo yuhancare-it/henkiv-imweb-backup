@@ -1,0 +1,420 @@
+<!-- [yhc] 면역 섹션 등장 인터랙션 — 아임웹 코드 위젯 삽입용 -->
+
+<style>
+/* =============================================
+   [yhc-imm] 등장 애니메이션 대상 요소 초기 상태
+   — 아임웹 기존 위젯들에 클래스를 추가하지 않고
+     CSS 선택자로 직접 타겟팅
+   ============================================= */
+
+/* ----- 공통 트랜지션 ----- */
+.yhc-imm-fade {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 오른쪽에서 등장 */
+.yhc-imm-fade-right {
+  opacity: 0;
+  transform: translate3d(40px, 0, 0);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 왼쪽에서 등장 */
+.yhc-imm-fade-left {
+  opacity: 0;
+  transform: translate3d(-40px, 0, 0);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 스케일업 페이드 (이미지용) */
+.yhc-imm-fade-scale {
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ----- 등장 완료 상태 ----- */
+.yhc-imm-fade.yhc-imm-visible,
+.yhc-imm-fade-right.yhc-imm-visible,
+.yhc-imm-fade-left.yhc-imm-visible,
+.yhc-imm-fade-scale.yhc-imm-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* ----- 퇴장 상태 (역스크롤 시) ----- */
+.yhc-imm-fade.yhc-imm-hiding {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+.yhc-imm-fade-right.yhc-imm-hiding {
+  opacity: 0;
+  transform: translate3d(40px, 0, 0);
+}
+.yhc-imm-fade-left.yhc-imm-hiding {
+  opacity: 0;
+  transform: translate3d(-40px, 0, 0);
+}
+.yhc-imm-fade-scale.yhc-imm-hiding {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+/* =============================================
+   [yhc-imm] 가로 구분선 드로잉 애니메이션
+   ============================================= */
+.yhc-nk-line,
+.yhc-cy-line {
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.yhc-nk-line.yhc-imm-line-drawn,
+.yhc-cy-line.yhc-imm-line-drawn {
+  transform: scaleX(1);
+}
+
+/* 역스크롤 시 선 되감기 */
+.yhc-nk-line.yhc-imm-line-hiding,
+.yhc-cy-line.yhc-imm-line-hiding {
+  transform: scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =============================================
+   [yhc-imm] 숫자 카운트업 영역 순차 등장
+   ============================================= */
+.yhc-nk-content > span,
+.yhc-cy-content > span {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.yhc-nk-content > span.yhc-imm-span-visible,
+.yhc-cy-content > span.yhc-imm-span-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* 역스크롤 시 숨김 */
+.yhc-nk-content > span.yhc-imm-span-hiding,
+.yhc-cy-content > span.yhc-imm-span-hiding {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* =============================================
+   [yhc-imm] 딜레이 유틸리티
+   ============================================= */
+.yhc-imm-delay-1 { transition-delay: 0.1s; }
+.yhc-imm-delay-2 { transition-delay: 0.2s; }
+.yhc-imm-delay-3 { transition-delay: 0.3s; }
+.yhc-imm-delay-4 { transition-delay: 0.4s; }
+.yhc-imm-delay-5 { transition-delay: 0.5s; }
+.yhc-imm-delay-6 { transition-delay: 0.6s; }
+.yhc-imm-delay-7 { transition-delay: 0.7s; }
+.yhc-imm-delay-8 { transition-delay: 0.8s; }
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =============================================
+     [yhc-imm] 설정
+     ============================================= */
+  var CFG = {
+    triggerRatio: 0.78,       /* 뷰포트 하단 78% 지점에서 등장 */
+    hideOffset:  100,         /* 뷰포트 밖 100px 이상 벗어나면 퇴장 */
+    spanStagger: 80,          /* 숫자 span 순차 등장 간격 (ms) */
+    lineDelay:   0,           /* 선 드로잉 시작 딜레이 (ms) */
+    spanStartDelay: 500,      /* 선 완성 후 숫자 등장까지 딜레이 (ms) */
+    countUpDuration: 1600,    /* 카운트업 지속 시간 (ms) */
+  };
+
+  /* =============================================
+     [yhc-imm] 아임웹 위젯 요소 탐색 & 클래스 주입
+     — 아임웹 구조에서 각 위젯을 선택자로 찾아
+       적절한 애니메이션 클래스를 부여
+     ============================================= */
+  function yhcImmSetup() {
+    var allItems = [];
+
+    /* --- 1) 대제목 텍스트 (36px "우리 몸의 기초 면역 기능을...") --- */
+    /* 아임웹 텍스트 위젯 중 36px strong이 있는 것 */
+    var textWidgets = document.querySelectorAll('.widget_text_wrap');
+    textWidgets.forEach(function (tw) {
+      var span36 = tw.querySelector('span[style*="font-size: 36px"]');
+      if (span36) {
+        tw.classList.add('yhc-imm-fade');
+        allItems.push({
+          el: tw,
+          type: 'fade'
+        });
+      }
+    });
+
+    /* --- 2) 부제목 텍스트들 (18px strong 블록) --- */
+    textWidgets.forEach(function (tw) {
+      /* 36px 제목은 이미 처리했으므로 건너뜀 */
+      if (tw.classList.contains('yhc-imm-fade')) return;
+
+      var span18 = tw.querySelector('span[style*="font-size: 18px"]');
+      if (span18) {
+        tw.classList.add('yhc-imm-fade');
+        allItems.push({
+          el: tw,
+          type: 'fade'
+        });
+      }
+    });
+
+    /* --- 3) NK세포 숫자 행 (yhc-nk-row) --- */
+    var nkRow = document.querySelector('.yhc-nk-row');
+    if (nkRow) {
+      allItems.push({
+        el: nkRow,
+        type: 'counter-row',
+        lineClass: 'yhc-nk-line',
+        contentClass: 'yhc-nk-content'
+      });
+    }
+
+    /* --- 4) 사이토카인 숫자 행 (yhc-cy-row) --- */
+    var cyRow = document.querySelector('.yhc-cy-row');
+    if (cyRow) {
+      allItems.push({
+        el: cyRow,
+        type: 'counter-row',
+        lineClass: 'yhc-cy-line',
+        contentClass: 'yhc-cy-content'
+      });
+    }
+
+    /* --- 5) 이미지 위젯들 --- */
+    var imgWraps = document.querySelectorAll('.widget.image');
+    imgWraps.forEach(function (iw) {
+      iw.classList.add('yhc-imm-fade-scale');
+      allItems.push({
+        el: iw,
+        type: 'fade-scale'
+      });
+    });
+
+    return allItems;
+  }
+
+  /* =============================================
+     [yhc-imm] 카운트업 로직 (부드러운 ease-out)
+     ============================================= */
+  function yhcCountUp(el, target, duration) {
+    var start = null;
+    var current = 0;
+
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function step(timestamp) {
+      if (!start) start = timestamp;
+      var progress = Math.min((timestamp - start) / duration, 1);
+      var easedProgress = easeOutCubic(progress);
+      current = Math.round(easedProgress * target);
+      el.textContent = current;
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    }
+
+    el.textContent = '0';
+    requestAnimationFrame(step);
+  }
+
+  /* =============================================
+     [yhc-imm] 카운트 리셋
+     ============================================= */
+  function yhcResetCount(el, target) {
+    el.textContent = '0';
+    el._counted = false;
+  }
+
+  /* =============================================
+     [yhc-imm] 등장 처리
+     ============================================= */
+  function yhcImmReveal(item) {
+    if (item._visible) return;
+    item._visible = true;
+
+    /* 퇴장 타이머 취소 */
+    if (item._hideTimers) {
+      item._hideTimers.forEach(function (t) { clearTimeout(t); });
+    }
+    item._hideTimers = [];
+
+    var el = item.el;
+
+    if (item.type === 'fade' || item.type === 'fade-right' || item.type === 'fade-left') {
+      el.classList.remove('yhc-imm-hiding');
+      el.classList.add('yhc-imm-visible');
+
+    } else if (item.type === 'fade-scale') {
+      el.classList.remove('yhc-imm-hiding');
+      el.classList.add('yhc-imm-visible');
+
+    } else if (item.type === 'counter-row') {
+      /* 선 드로잉 */
+      var lineEl = el.querySelector('.' + item.lineClass);
+      var contentEl = el.querySelector('.' + item.contentClass);
+      var spans = contentEl ? contentEl.querySelectorAll('span') : [];
+
+      if (lineEl) {
+        lineEl.classList.remove('yhc-imm-line-hiding');
+        item._hideTimers.push(setTimeout(function () {
+          lineEl.classList.add('yhc-imm-line-drawn');
+        }, CFG.lineDelay));
+      }
+
+      /* 숫자 span 순차 등장 */
+      for (var i = 0; i < spans.length; i++) {
+        (function (span, idx) {
+          span.classList.remove('yhc-imm-span-hiding');
+          item._hideTimers.push(setTimeout(function () {
+            span.classList.add('yhc-imm-span-visible');
+          }, CFG.spanStartDelay + idx * CFG.spanStagger));
+        })(spans[i], i);
+      }
+
+      /* 카운트업 시작 */
+      var numberEl = contentEl ? contentEl.querySelector('.yhc-nk-number, .yhc-cy-number') : null;
+      if (numberEl && !numberEl._counted) {
+        var target = parseInt(numberEl.textContent, 10) || 0;
+        if (!numberEl._originalValue) numberEl._originalValue = target;
+        item._hideTimers.push(setTimeout(function () {
+          numberEl._counted = true;
+          yhcCountUp(numberEl, numberEl._originalValue, CFG.countUpDuration);
+        }, CFG.spanStartDelay + CFG.spanStagger));
+      }
+    }
+  }
+
+  /* =============================================
+     [yhc-imm] 퇴장 처리 (역스크롤)
+     ============================================= */
+  function yhcImmHide(item) {
+    if (!item._visible) return;
+    item._visible = false;
+
+    /* 진행 중 타이머 취소 */
+    if (item._hideTimers) {
+      item._hideTimers.forEach(function (t) { clearTimeout(t); });
+    }
+    item._hideTimers = [];
+
+    var el = item.el;
+
+    if (item.type === 'fade' || item.type === 'fade-right' ||
+        item.type === 'fade-left' || item.type === 'fade-scale') {
+      el.classList.remove('yhc-imm-visible');
+      el.classList.add('yhc-imm-hiding');
+
+      /* hiding 후 초기 상태 복원 */
+      item._hideTimers.push(setTimeout(function () {
+        el.classList.remove('yhc-imm-hiding');
+      }, 600));
+
+    } else if (item.type === 'counter-row') {
+      var lineEl = el.querySelector('.' + item.lineClass);
+      var contentEl = el.querySelector('.' + item.contentClass);
+      var spans = contentEl ? contentEl.querySelectorAll('span') : [];
+
+      /* span 숨김 */
+      for (var i = 0; i < spans.length; i++) {
+        spans[i].classList.remove('yhc-imm-span-visible');
+        spans[i].classList.add('yhc-imm-span-hiding');
+      }
+
+      /* 선 되감기 */
+      if (lineEl) {
+        lineEl.classList.remove('yhc-imm-line-drawn');
+        lineEl.classList.add('yhc-imm-line-hiding');
+      }
+
+      /* 카운트 리셋 */
+      var numberEl = contentEl ? contentEl.querySelector('.yhc-nk-number, .yhc-cy-number') : null;
+      if (numberEl) {
+        yhcResetCount(numberEl);
+      }
+
+      /* hiding 클래스 정리 */
+      item._hideTimers.push(setTimeout(function () {
+        for (var j = 0; j < spans.length; j++) {
+          spans[j].classList.remove('yhc-imm-span-hiding');
+        }
+        if (lineEl) lineEl.classList.remove('yhc-imm-line-hiding');
+      }, 600));
+    }
+  }
+
+  /* =============================================
+     [yhc-imm] IntersectionObserver — 양방향
+     ============================================= */
+  function yhcImmObserve(allItems) {
+    if (!('IntersectionObserver' in window)) {
+      /* fallback: 즉시 모두 표시 */
+      allItems.forEach(function (item) { yhcImmReveal(item); });
+      return;
+    }
+
+    var marginBottom = Math.round((1 - CFG.triggerRatio) * 100);
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        /* entry.target에 매핑된 item 찾기 */
+        var item = allItems.find(function (it) { return it.el === entry.target; });
+        if (!item) return;
+
+        if (entry.isIntersecting) {
+          yhcImmReveal(item);
+        } else {
+          yhcImmHide(item);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: CFG.hideOffset + 'px 0px -' + marginBottom + '% 0px',
+      threshold: 0
+    });
+
+    allItems.forEach(function (item) {
+      observer.observe(item.el);
+    });
+  }
+
+  /* =============================================
+     [yhc-imm] 초기화
+     ============================================= */
+  function yhcImmInit() {
+    var allItems = yhcImmSetup();
+    if (allItems.length === 0) return;
+    yhcImmObserve(allItems);
+  }
+
+  /* DOM 준비 후 실행 */
+  if (document.readyState === 'complete') {
+    yhcImmInit();
+  } else {
+    window.addEventListener('load', yhcImmInit);
+  }
+
+})();
+</script>
