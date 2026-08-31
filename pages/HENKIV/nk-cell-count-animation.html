@@ -1,0 +1,26 @@
+<div class="yhc-nk-row" id="yhc-nk-row">
+  <div class="yhc-nk-line"></div>
+  <div class="yhc-nk-content">
+    <span class="yhc-nk-label">NK 세포 활성 변화율</span>
+    <span class="yhc-nk-number">354</span>
+    <span class="yhc-nk-percent">%</span>
+    <span class="yhc-nk-suffix">증가</span>
+  </div>
+</div>
+
+<style>
+.yhc-nk-row { display: flex; align-items: center; width: 100%; box-sizing: border-box; overflow: hidden; padding: 10px 0; }
+.yhc-nk-line { height: 1px; background-color: #555555; flex-shrink: 0; flex:1; }
+.yhc-nk-content { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; flex-shrink: 0; }
+.yhc-nk-label  { font-size: 18px; font-weight: 400; color: #333333; letter-spacing: -0.02em; }
+.yhc-nk-number { font-size: 110px; font-weight: 700; color: #1a3a2a; line-height: 1; letter-spacing: -0.04em; }
+.yhc-nk-percent { font-size: 80px; font-weight: 700; color: #1a3a2a; line-height: 1; letter-spacing: -0.04em; }
+.yhc-nk-suffix { font-size: 22px; font-weight: 400; color: #333333; letter-spacing: -0.02em; }
+@media (max-width: 768px) {
+  .yhc-nk-label  { font-size: 12px; }
+  .yhc-nk-number { font-size: 56px; }
+  .yhc-nk-percent { font-size: 40px; }
+  .yhc-nk-suffix { font-size: 14px; }
+  .yhc-nk-content { gap: 4px; }
+}
+</style>
