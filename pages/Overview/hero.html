@@ -1,0 +1,183 @@
+<style>
+  /* ===== 히어로 콘텐츠 오버레이 ===== */
+.hkv-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.hkv-content-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(90vh, 65vw); /* 수정 */
+  height: 80vh;           /* 수정 */
+  max-height: 950px;
+  transform: translateY(20%) !important;
+}
+
+/* ===== 사슴 공통 ===== */
+.hkv-deer,
+.hkv-deer-front {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  height: 100%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.hkv-deer img,
+.hkv-deer-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  display: block;
+}
+
+/* ===== 사슴 몸통 (로고 뒤) ===== */
+.hkv-deer {
+  opacity: 0;
+  z-index: 1;
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 100%,
+    50% 100%,
+    50% 62%,
+    0% 62%,
+    0% 100%,
+    0% 100%
+  );
+}
+
+/* ===== 사슴 앞발 (로고 앞, 왼쪽 절반만) ===== */
+.hkv-deer-front {
+  opacity: 0;
+  z-index: 3;
+  clip-path: polygon(
+    0% 62%,
+    50% 62%,
+    50% 100%,
+    0% 100%
+  );
+}
+
+/* ===== 진입 애니메이션 ===== */
+.hkv-deer.hkv-deer-enter,
+.hkv-deer-front.hkv-deer-enter {
+  animation: hkvDeerSlideUp 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+@keyframes hkvDeerSlideUp {
+  0%   { opacity: 0; transform: translate(-50%, calc(-50% + 40px)); }
+  20%  { opacity: 1; }
+  100% { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* ===== 로고 ===== */
+.hkv-logo {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.hkv-logo img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+.hkv-logo.hkv-logo-enter {
+  animation: hkvLogoEnter 1s ease-out forwards;
+}
+@keyframes hkvLogoEnter {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0px); }
+}
+
+/* ===== 반응형 ===== */
+@media screen and (min-width: 1600px) {
+  .hkv-content-group { width: min(85vh, 60vw); max-height: 1000px; transform: translateY(15%); }
+}
+@media screen and (max-width: 1024px) {
+  .hkv-content-group { width: min(85vh, 75vw); height: 70vh; transform: translateY(15%); }
+  .hkv-deer, .hkv-deer-front { width: 80%; }
+  .hkv-logo { width: 70%; }
+}
+@media screen and (max-width: 768px) {
+  .hkv-content-group { width: min(90vh, 85vw); height: 65vh; transform: translateY(15%); }
+  .hkv-deer, .hkv-deer-front { width: 90%; height: 80%; }
+  .hkv-logo { width: 80%; bottom: 4%; }
+}
+</style>
+
+<!-- ===== 사슴 + 로고 오버레이 ===== -->
+<div class="hkv-hero-overlay">
+  <div class="hkv-content-group">
+
+    <!-- 사슴 몸통 (로고 뒤) -->
+    <div class="hkv-deer">
+      <img
+        src="https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/main%20deer.svg"
+        alt="HENKIV Deer"
+      >
+    </div>
+
+    <!-- 로고 -->
+    <div class="hkv-logo">
+      <img
+        src="https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/Group%20171.svg"
+        alt="HENKIV Logo"
+      >
+    </div>
+
+    <!-- 사슴 앞발 (로고 앞, 왼쪽 절반만) -->
+    <div class="hkv-deer-front">
+      <img
+        src="https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/main%20deer.svg"
+        alt=""
+        aria-hidden="true"
+      >
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var deer      = document.querySelector('.hkv-deer');
+  var deerFront = document.querySelector('.hkv-deer-front');
+  var logo      = document.querySelector('.hkv-logo');
+  var overlay   = document.querySelector('.hkv-hero-overlay');
+  var visualSection = document.querySelector('.visual_section');
+
+  /* ===== 비주얼 섹션 안으로 오버레이 이동 ===== */
+  if (overlay && visualSection) {
+    visualSection.style.position = 'relative';
+    visualSection.appendChild(overlay);
+  }
+
+  /* ===== 진입 애니메이션 ===== */
+  setTimeout(function () {
+    if (deer) deer.classList.add('hkv-deer-enter');
+    if (deerFront) deerFront.classList.add('hkv-deer-enter');
+  }, 300);
+
+  setTimeout(function () {
+    if (logo) logo.classList.add('hkv-logo-enter');
+  }, 900);
+
+})();
+</script>
