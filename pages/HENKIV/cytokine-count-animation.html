@@ -1,0 +1,26 @@
+<div class="yhc-cy-row" id="yhc-cy-row">
+  <div class="yhc-cy-line"></div>
+  <div class="yhc-cy-content">
+    <span class="yhc-cy-label">사이토카인 변화율</span>
+    <span class="yhc-cy-number">211</span>
+    <span class="yhc-cy-percent">%</span>
+    <span class="yhc-cy-suffix">증가</span>
+  </div>
+</div>
+
+<style>
+.yhc-cy-row { display: flex; align-items: center; width: 100%; box-sizing: border-box; overflow: hidden; padding: 10px 0; }
+.yhc-cy-line { height: 1px; background-color: #555555; flex-shrink: 0; flex:1;}
+.yhc-cy-content { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; flex-shrink: 0; }
+.yhc-cy-label  { font-size: 18px; font-weight: 400; color: #333333; letter-spacing: -0.02em; }
+.yhc-cy-number { font-size: 110px; font-weight: 700; color: #1a3a2a; line-height: 1; letter-spacing: -0.04em; }
+.yhc-cy-percent { font-size: 80px; font-weight: 700; color: #1a3a2a; line-height: 1; letter-spacing: -0.04em; }
+.yhc-cy-suffix { font-size: 22px; font-weight: 400; color: #333333; letter-spacing: -0.02em; }
+@media (max-width: 768px) {
+  .yhc-cy-label  { font-size: 12px; }
+  .yhc-cy-number { font-size: 56px; }
+  .yhc-cy-percent { font-size: 40px; }
+  .yhc-cy-suffix { font-size: 14px; }
+  .yhc-cy-content { gap: 4px; }
+}
+</style>
