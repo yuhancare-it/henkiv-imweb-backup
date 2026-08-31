@@ -1,0 +1,101 @@
+<style>
+  #w202604085cee1a3a7a620 .widget_text_wrap {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #w202604085cee1a3a7a620.henkiv-reveal .widget_text_wrap {
+    clip-path: inset(0 0% 0 0);
+  }
+  #w202604088df745677fcdd .widget_text_wrap {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1.3s ease 0.4s, transform 1.3s ease 0.4s;
+  }
+  #w202604088df745677fcdd.henkiv-fade-in .widget_text_wrap {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  #w20260408a742170cdb2e7 .yhc-process-circle:first-child {
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #w20260408a742170cdb2e7 .yhc-process-arrow-wrap {
+    opacity: 0;
+    transition: opacity 0.9s ease 0.7s;
+  }
+  #w20260408a742170cdb2e7 .yhc-process-circle:last-child {
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 1s ease 1.2s, transform 1s cubic-bezier(0.22, 1, 0.36, 1) 1.2s;
+  }
+  #w20260408a742170cdb2e7.henkiv-process-in .yhc-process-circle:first-child,
+  #w20260408a742170cdb2e7.henkiv-process-in .yhc-process-circle:last-child {
+    opacity: 1;
+    transform: scale(1);
+  }
+  #w20260408a742170cdb2e7.henkiv-process-in .yhc-process-arrow-wrap {
+    opacity: 1;
+  }
+  #w20260408f8552426226e7 .widget_text_wrap {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  #w20260408f8552426226e7.henkiv-fade-in .widget_text_wrap {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  #w20260408fff27f659e8de ._item {
+    opacity: 0;
+    transform: translateY(50px) rotateX(8deg);
+    transform-origin: top center;
+    transition: opacity 1.1s ease, transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #w20260408fff27f659e8de._gallery-in ._item:nth-child(1) {
+    opacity: 1; transform: translateY(0) rotateX(0deg); transition-delay: 0.15s;
+  }
+  #w20260408fff27f659e8de._gallery-in ._item:nth-child(2) {
+    opacity: 1; transform: translateY(0) rotateX(0deg); transition-delay: 0.4s;
+  }
+  #w20260408fff27f659e8de._gallery-in ._item:nth-child(3) {
+    opacity: 1; transform: translateY(0) rotateX(0deg); transition-delay: 0.65s;
+  }
+  @media screen and (max-width: 768px) {
+    #w202604085cee1a3a7a620 .widget_text_wrap { transition-duration: 1.4s; }
+    #w20260408fff27f659e8de ._item { transform: translateY(30px); transition-duration: 0.9s; }
+    #w20260408fff27f659e8de._gallery-in ._item:nth-child(1),
+    #w20260408fff27f659e8de._gallery-in ._item:nth-child(2),
+    #w20260408fff27f659e8de._gallery-in ._item:nth-child(3) { transform: translateY(0); }
+  }
+</style>
+<script>
+(function () {
+  var titleEl   = document.querySelector('#w202604085cee1a3a7a620');
+  var bodyEl    = document.querySelector('#w202604088df745677fcdd');
+  var processEl = document.querySelector('#w20260408a742170cdb2e7');
+  var certTitle = document.querySelector('#w20260408f8552426226e7');
+  var galleryEl = document.querySelector('#w20260408fff27f659e8de');
+
+  function makeObserver(className, threshold) {
+    return new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add(className);
+        this.unobserve(entry.target);
+      }.bind(this));
+    }, { threshold: threshold || 0.2 });
+  }
+
+  var revealObs  = makeObserver('henkiv-reveal', 0.2);
+  var fadeObs    = makeObserver('henkiv-fade-in', 0.2);
+  var processObs = makeObserver('henkiv-process-in', 0.3);
+  var galleryObs = makeObserver('_gallery-in', 0.15);
+
+  if (titleEl)   revealObs.observe(titleEl);
+  if (bodyEl)    fadeObs.observe(bodyEl);
+  if (processEl) processObs.observe(processEl);
+  if (certTitle) fadeObs.observe(certTitle);
+  if (galleryEl) galleryObs.observe(galleryEl);
+})();
+</script>
