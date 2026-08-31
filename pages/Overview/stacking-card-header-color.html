@@ -1,0 +1,286 @@
+<style>
+  /* ── 스태킹 카드 공통 ── */
+  #s2026040877b96ca6c63df,
+  #s202604086d61c0613bd9f,
+  #s202604102602394de15ab {
+    position: sticky;
+    top: 0;
+    will-change: transform;
+    transition: none;
+  }
+
+  #s2026040877b96ca6c63df { z-index: 1; }
+  #s202604086d61c0613bd9f { z-index: 2; }
+
+  /* 마지막 카드는 relative */
+  #s202604102602394de15ab {
+    position: relative;
+    z-index: 3;
+  }
+
+  /* 다음 섹션이 카드 위로 올라오도록 */
+  #s20260413e257d1b65b5cb {
+    position: relative;
+    z-index: 4;
+  }
+
+  /* 카드 숨길 때만 부드럽게 */
+  .stk-card-hidden-84f7a {
+    transform: translateY(-100vh) !important;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  }
+</style>
+
+<script>
+(function () {
+
+  /* ===== 모바일 실행 안 함 ===== */
+  if (window.innerWidth <= 768) return;
+
+  /* ===== 어두운 섹션 ID (일반) ===== */
+  var DARK_SECTIONS = [
+    's20260416b83d2cbae295f',  /* 히어로 */
+    's202604088c93b0ab63e48',  /* 어두운 섹션 */
+  ];
+
+  /* ===== 스태킹 카드 섹션 ===== */
+  var STACK_CARDS = [
+    { id: 's2026040877b96ca6c63df', dark: true  },  /* 카드1 어두운 */
+    { id: 's202604086d61c0613bd9f', dark: false },  /* 카드2 밝은  */
+    { id: 's202604102602394de15ab', dark: true  },  /* 카드3 어두운 */
+  ];
+
+  /* ===== 로고 URL ===== */
+  var LOGO_BLACK = 'https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/logo%20black%201.svg';
+  var LOGO_WHITE = 'https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/logo%20white%201.svg';
+
+  /* ===== 헤더 ===== */
+  var header = document.getElementById('doz_header');
+  if (!header) return;
+
+  /* ===== CSS 주입 ===== */
+  var style = document.createElement('style');
+  style.innerHTML = [
+    /* 기존 아임웹 로고 강제 숨김 */
+    '#doz_header ._img_box .normal_logo,',
+    '#doz_header ._img_box .scroll_logo {',
+    '  display: none !important;',
+    '}',
+    /* 기본: 검정 */
+    '#doz_header .plain_name,',
+    '#doz_header .dropdown-toggle,',
+    '#doz_header .nav > li > a {',
+    '  color: #111111 !important;',
+    '  transition: color 0.4s ease !important;',
+    '}',
+    '#doz_header .icon-handbag,',
+    '#doz_header .icon-magnifier,',
+    '#doz_header .icon_code {',
+    '  color: #111111 !important;',
+    '  transition: color 0.4s ease !important;',
+    '}',
+    /* 호버: 기본 */
+    '#doz_header .plain_name:hover,',
+    '#doz_header .dropdown-toggle:hover,',
+    '#doz_header .nav > li > a:hover {',
+    '  color: #555555 !important;',
+    '}',
+    /* 다크: 흰색 */
+    '#doz_header.hkv-header-dark .plain_name,',
+    '#doz_header.hkv-header-dark .dropdown-toggle,',
+    '#doz_header.hkv-header-dark .nav > li > a {',
+    '  color: #ffffff !important;',
+    '}',
+    '#doz_header.hkv-header-dark .icon-handbag,',
+    '#doz_header.hkv-header-dark .icon-magnifier,',
+    '#doz_header.hkv-header-dark .icon_code {',
+    '  color: #ffffff !important;',
+    '}',
+    /* 호버: 다크 */
+    '#doz_header.hkv-header-dark .plain_name:hover,',
+    '#doz_header.hkv-header-dark .dropdown-toggle:hover,',
+    '#doz_header.hkv-header-dark .nav > li > a:hover {',
+    '  color: rgba(255,255,255,0.6) !important;',
+    '}',
+  ].join('\n');
+  document.head.appendChild(style);
+
+  /* ===== 캐싱 ===== */
+  var darkEls  = [];
+  var stackEls = [];
+
+  function cacheSections() {
+    darkEls = [];
+    DARK_SECTIONS.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) darkEls.push(el);
+    });
+
+    stackEls = [];
+    STACK_CARDS.forEach(function (card) {
+      var el = document.getElementById(card.id);
+      if (el) stackEls.push({ el: el, dark: card.dark });
+    });
+  }
+
+  /* ===== 로고 ===== */
+  var hkvLogoEl     = null;
+  var currentIsDark = null;
+  var logoInited    = false;
+  var logoLink      = null;
+
+  function initLogo() {
+    if (logoInited) return;
+
+    var imgBox = header.querySelector('._img_box');
+    if (!imgBox) return;
+
+    /* 기존 자식 전부 숨김 */
+    Array.from(imgBox.children).forEach(function (child) {
+      child.style.display = 'none';
+    });
+
+    /* 아임웹이 다시 살릴 경우 대비 감시 */
+    var logoObserver = new MutationObserver(function () {
+      Array.from(imgBox.children).forEach(function (child) {
+        if (child !== logoLink) {
+          child.style.display = 'none';
+        }
+      });
+    });
+    logoObserver.observe(imgBox, { childList: true, attributes: true, subtree: true });
+
+    imgBox.style.position = 'relative';
+    imgBox.style.display  = 'inline-block';
+
+    logoLink           = document.createElement('a');
+    logoLink.href      = '/';
+    logoLink.style.cssText = 'display: block; line-height: 0;';
+
+    hkvLogoEl               = document.createElement('img');
+    hkvLogoEl.src           = LOGO_BLACK;
+    hkvLogoEl.alt           = 'HENKIV';
+    hkvLogoEl.style.cssText = [
+      'display: block;',
+      'width: 180px;',
+      'height: auto;',
+      'position: relative;',
+      'z-index: 10;',
+      'opacity: 1;',
+      'transition: opacity 0.2s ease;',
+    ].join('');
+
+    logoLink.appendChild(hkvLogoEl);
+    imgBox.appendChild(logoLink);
+    logoInited = true;
+  }
+
+  function updateLogo(isDark) {
+    if (!hkvLogoEl) return;
+    if (currentIsDark === isDark) return;
+    currentIsDark = isDark;
+
+    hkvLogoEl.style.opacity = '0';
+    setTimeout(function () {
+      hkvLogoEl.src           = isDark ? LOGO_WHITE : LOGO_BLACK;
+      hkvLogoEl.style.opacity = '1';
+    }, 200);
+  }
+
+  /* ===== 헤더 상태 적용 ===== */
+  function applyHeader(isDark) {
+    if (isDark) {
+      header.classList.add('hkv-header-dark');
+    } else {
+      header.classList.remove('hkv-header-dark');
+    }
+    updateLogo(isDark);
+  }
+
+  /* ===== 스태킹 카드 숨김 처리 ===== */
+  function updateStackCards() {
+    for (var i = 0; i < stackEls.length - 1; i++) {
+      var nextRect = stackEls[i + 1].el.getBoundingClientRect();
+      if (nextRect.top <= 10) {
+        stackEls[i].el.classList.add('stk-card-hidden-84f7a');
+      } else {
+        stackEls[i].el.classList.remove('stk-card-hidden-84f7a');
+      }
+    }
+  }
+
+  /* ===== 헤더 색상 체크 ===== */
+  function checkHeader() {
+    var headerH      = header.getBoundingClientRect().height;
+    var headerMiddle = headerH / 2;
+
+    /* 1. 일반 어두운 섹션 체크 */
+    var isDark = false;
+    darkEls.forEach(function (el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.top <= headerMiddle && rect.bottom >= headerMiddle) {
+        isDark = true;
+      }
+    });
+
+    /* 2. 스태킹 카드 체크 (위에서부터 z-index 높은 순으로 판단) */
+    /* 현재 화면에 보이는 카드 중 가장 위(z-index 높은)것 기준 */
+    var activeCardDark = null;
+    stackEls.forEach(function (item) {
+      var rect = item.el.getBoundingClientRect();
+      /* 카드가 헤더 영역에 걸쳐있고, hidden 상태가 아닐 때 */
+      var isHidden = item.el.classList.contains('stk-card-hidden-84f7a');
+      if (!isHidden && rect.top <= headerMiddle && rect.bottom >= headerMiddle) {
+        activeCardDark = item.dark;
+      }
+    });
+
+    if (activeCardDark !== null) {
+      applyHeader(activeCardDark);
+    } else {
+      applyHeader(isDark);
+    }
+  }
+
+  /* ===== 스크롤 통합 핸들러 ===== */
+  function onScroll() {
+    updateStackCards();
+    checkHeader();
+  }
+
+  /* ===== 이벤트 ===== */
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () {
+    cacheSections();
+    checkHeader();
+  });
+
+  /* ===== 초기화 ===== */
+  function init() {
+    cacheSections();
+    initLogo();
+
+    /* 스태킹 카드 초기 스타일 */
+    stackEls.forEach(function (item, i) {
+      if (i < stackEls.length - 1) {
+        item.el.style.position = 'sticky';
+        item.el.style.top      = '0px';
+      } else {
+        item.el.style.position = 'relative';
+      }
+      item.el.style.zIndex     = String(i + 1);
+      item.el.style.willChange = 'transform';
+    });
+
+    onScroll();
+  }
+
+  if (document.readyState === 'complete') {
+    init();
+  } else {
+    window.addEventListener('load', init);
+  }
+
+})();
+</script>
