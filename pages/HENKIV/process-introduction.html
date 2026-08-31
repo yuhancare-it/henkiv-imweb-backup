@@ -1,0 +1,155 @@
+<!-- [yhc] 공법 프로세스 섹션 -->
+<div class="yhc-process-wrap">
+
+  <!-- 프로세스 행 -->
+  <div class="yhc-process-row">
+
+    <!-- 왼쪽 원형 이미지 -->
+    <div class="yhc-process-circle">
+      <img src="https://cdn.imweb.me/upload/S20260326c3090126d17d5/4339043de96b5.png" alt="녹용">
+    </div>
+
+    <!-- 가운데 화살표 + 텍스트 -->
+    <div class="yhc-process-arrow-wrap">
+      <!-- 화살표 위 텍스트 -->
+      <div class="yhc-process-label-top">유한건강생활의 독자적 효소분해 공법</div>
+      <!-- 화살표 -->
+      <div class="yhc-process-arrow">
+        <div class="yhc-arrow-line"></div>
+        <div class="yhc-arrow-head"></div>
+      </div>
+      <!-- 화살표 아래 텍스트 -->
+      <div class="yhc-process-label-bottom">10년의 연구로 완성된 기술력</div>
+    </div>
+
+    <!-- 오른쪽 원형 이미지 -->
+    <div class="yhc-process-circle">
+      <img src="https://cdn.imweb.me/upload/S20260326c3090126d17d5/d1c0582ee0dae.png" alt="건강기능식품">
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+/* ========================================
+   [yhc] 프로세스 전체 래퍼
+   ======================================== */
+.yhc-process-wrap {
+  width: 70%;
+  box-sizing: border-box;
+  padding: 60px 0 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* ========================================
+   [yhc] 프로세스 행
+   ======================================== */
+.yhc-process-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+}
+
+/* ========================================
+   [yhc] 원형 이미지
+   ======================================== */
+.yhc-process-circle {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.yhc-process-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ========================================
+   [yhc] 화살표 영역
+   ======================================== */
+.yhc-process-arrow-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+/* 화살표 위 텍스트 */
+.yhc-process-label-top {
+  font-size: 18px;
+  color: #333333;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 화살표 */
+.yhc-process-arrow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.yhc-arrow-line {
+  flex: 1;
+  height: 1.5px;
+  background-color: #555555;
+}
+
+/* 화살표 머리 */
+.yhc-arrow-head {
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 12px solid #555555;
+  flex-shrink: 0;
+}
+
+/* 화살표 아래 텍스트 */
+.yhc-process-label-bottom {
+  font-size: 18px;
+  color: #333333;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ========================================
+   [yhc] 반응형
+   ======================================== */
+@media (max-width: 768px) {
+  .yhc-process-wrap {
+    width: 90%;
+    padding: 40px 0 30px;
+  }
+
+  .yhc-process-row {
+    gap: 12px;
+  }
+
+  .yhc-process-circle {
+    width: 130px;
+    height: 130px;
+  }
+
+  .yhc-process-label-top,
+  .yhc-process-label-bottom {
+    font-size: 11px;
+    white-space: normal;
+  }
+}
+</style>
