@@ -1,0 +1,63 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  #post_card_b202604298c9ed3cbe268f .card-thumbnail-wrap {
+    position: relative !important;
+  }
+
+  /* 배경 원 위치 */
+  #post_card_b202604298c9ed3cbe268f .yhc-news-icon {
+    position: absolute;
+    bottom: -14px;  /* 원 위아래 */
+    right: -14px;   /* 원 좌우 */
+    width: 80px;
+    height: 80px;
+    background: rgba(30, 30, 30, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* 아이콘만 따로 위치 조정 */
+  #post_card_b202604298c9ed3cbe268f .yhc-news-icon i {
+    font-size: 18px;
+    color: #fff;
+    position: relative;
+    top: -4px;   /* 아이콘 위아래 조정 */
+    left: -4px;  /* 아이콘 좌우 조정 */
+  }
+
+  #post_card_b202604298c9ed3cbe268f .list-style-card:hover .yhc-news-icon {
+    opacity: 1;
+  }
+
+
+</style>
+
+<script>
+(function() {
+  function addIcons() {
+    var cards = document.querySelectorAll('#post_card_b202604298c9ed3cbe268f .card-thumbnail-wrap');
+    cards.forEach(function(thumb) {
+      if (thumb.querySelector('.yhc-news-icon')) return;
+      var btn = document.createElement('div');
+      btn.className = 'yhc-news-icon';
+      btn.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i>';
+      thumb.appendChild(btn);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addIcons);
+  } else {
+    addIcons();
+  }
+})();
+</script>
