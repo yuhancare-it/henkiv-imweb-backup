@@ -1,0 +1,62 @@
+<style>
+  /* 유튜브 헤더 숨김 */
+  .board-head .heading header {
+    display: none !important;
+  }
+
+  /* 총 건수 표시 */
+  .board-total-wrap {
+    font-size: 18px;
+    color: #181818;
+    padding: 12px 0;
+    border-bottom: 1px solid #181818;
+  }
+</style>
+
+<div class="board-total-wrap">
+  총 <span id="boardTotalNum">-</span>건
+</div>
+
+<script>
+(function() {
+  /* 게시글 상세페이지(bmode=view)면 전체 숨김 */
+  if (location.search.indexOf('bmode=view') !== -1) {
+    document.querySelector('.board-total-wrap').style.display = 'none';
+    return;
+  }
+
+  function init() {
+    var boardWrap = document.querySelector('#post_card_b202604298c9ed3cbe268f');
+    if (!boardWrap) return;
+
+    var wrap = boardWrap.closest('.widget.board._list_wrap');
+    if (!wrap) return;
+
+    var countEl = wrap.querySelector('.board-head .heading header em');
+    if (countEl) {
+      var num = parseInt(countEl.textContent.replace(/[^0-9]/g, ''));
+      document.getElementById('boardTotalNum').textContent = num.toLocaleString();
+      return;
+    }
+
+    /* DOM에서 못 찾으면 fetch */
+    fetch('/youtube/')
+      .then(function(r) { return r.text(); })
+      .then(function(html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+        var el = doc.querySelector('.board-head .heading header em');
+        if (el) {
+          var num = parseInt(el.textContent.replace(/[^0-9]/g, ''));
+          document.getElementById('boardTotalNum').textContent = num.toLocaleString();
+        }
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
