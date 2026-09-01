@@ -1,0 +1,179 @@
+<script>
+(function () {
+
+  /* ===== 모바일 실행 안 함 ===== */
+  if (window.innerWidth <= 768) return;
+
+  /* ===== 밝은 섹션 ID (검정 헤더로 전환) ===== */
+  var LIGHT_SECTIONS = [
+    's202604293908be9ab3899',  /* 브랜드 페이지 밝은 섹션 */
+  ];
+
+  /* ===== 로고 URL ===== */
+  var LOGO_BLACK = 'https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/logo%20black%201.svg';
+  var LOGO_WHITE = 'https://raw.githubusercontent.com/yeon0226/yuhan_svg/refs/heads/main/henkiv/logo%20white%201.svg';
+
+  /* ===== 헤더 ===== */
+  var header = document.getElementById('doz_header');
+  if (!header) return;
+
+  /* ===== CSS 주입 ===== */
+  var style = document.createElement('style');
+  style.innerHTML = [
+    /* 기존 아임웹 로고 숨김 */
+    '#doz_header ._img_box .normal_logo,',
+    '#doz_header ._img_box .scroll_logo {',
+    '  display: none !important;',
+    '}',
+    /* 기본: 흰색 (브랜드 페이지 기본이 어두운 배경) */
+    '#doz_header .plain_name,',
+    '#doz_header .dropdown-toggle,',
+    '#doz_header .nav > li > a {',
+    '  color: #ffffff !important;',
+    '  transition: color 0.4s ease !important;',
+    '}',
+    '#doz_header .icon-handbag,',
+    '#doz_header .icon-magnifier,',
+    '#doz_header .icon_code {',
+    '  color: #ffffff !important;',
+    '  transition: color 0.4s ease !important;',
+    '}',
+    '#doz_header .plain_name:hover,',
+    '#doz_header .dropdown-toggle:hover,',
+    '#doz_header .nav > li > a:hover {',
+    '  color: rgba(255,255,255,0.6) !important;',
+    '}',
+    /* 라이트 상태: 검정 */
+    '#doz_header.hkv-header-light .plain_name,',
+    '#doz_header.hkv-header-light .dropdown-toggle,',
+    '#doz_header.hkv-header-light .nav > li > a {',
+    '  color: #111111 !important;',
+    '}',
+    '#doz_header.hkv-header-light .icon-handbag,',
+    '#doz_header.hkv-header-light .icon-magnifier,',
+    '#doz_header.hkv-header-light .icon_code {',
+    '  color: #111111 !important;',
+    '}',
+    '#doz_header.hkv-header-light .plain_name:hover,',
+    '#doz_header.hkv-header-light .dropdown-toggle:hover,',
+    '#doz_header.hkv-header-light .nav > li > a:hover {',
+    '  color: #555555 !important;',
+    '}',
+  ].join('\n');
+  document.head.appendChild(style);
+
+  /* ===== 캐싱 ===== */
+  var lightEls = [];
+
+  function cacheSections() {
+    lightEls = [];
+    LIGHT_SECTIONS.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) lightEls.push(el);
+    });
+  }
+
+  /* ===== 로고 ===== */
+  var logoImg    = null;
+  var logoLink   = null;
+  var logoInited = false;
+  var currentIsDark = null;
+
+  function initLogo() {
+    if (logoInited) return;
+
+    var imgBox = header.querySelector('._img_box');
+    if (!imgBox) return;
+
+    Array.from(imgBox.children).forEach(function (child) {
+      child.style.display = 'none';
+    });
+
+    var logoObserver = new MutationObserver(function () {
+      Array.from(imgBox.children).forEach(function (child) {
+        if (child !== logoLink) child.style.display = 'none';
+      });
+    });
+    logoObserver.observe(imgBox, { childList: true, attributes: true, subtree: true });
+
+    imgBox.style.position = 'relative';
+    imgBox.style.display  = 'inline-block';
+
+    logoLink           = document.createElement('a');
+    logoLink.href      = '/';
+    logoLink.style.cssText = 'display: block; line-height: 0;';
+
+    logoImg               = document.createElement('img');
+    logoImg.src           = LOGO_WHITE;  /* 기본 흰색 로고 */
+    logoImg.alt           = 'HENKIV';
+    logoImg.style.cssText = [
+      'display: block;',
+      'width: 180px;',
+      'height: auto;',
+      'position: relative;',
+      'z-index: 10;',
+      'opacity: 1;',
+      'transition: opacity 0.2s ease;',
+    ].join('');
+
+    logoLink.appendChild(logoImg);
+    imgBox.appendChild(logoLink);
+    logoInited = true;
+  }
+
+  function updateLogo(isLight) {
+    if (!logoImg) return;
+    if (currentIsDark === isLight) return;
+    currentIsDark = isLight;
+
+    logoImg.style.opacity = '0';
+    setTimeout(function () {
+      logoImg.src           = isLight ? LOGO_BLACK : LOGO_WHITE;
+      logoImg.style.opacity = '1';
+    }, 200);
+  }
+
+  /* ===== 헤더 색상 체크 ===== */
+  function checkHeader() {
+    var headerH      = header.getBoundingClientRect().height;
+    var headerMiddle = headerH / 2;
+
+    /* 밝은 섹션에 헤더가 걸치면 검정으로 전환 */
+    var isLight = false;
+    lightEls.forEach(function (el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.top <= headerMiddle && rect.bottom >= headerMiddle) {
+        isLight = true;
+      }
+    });
+
+    if (isLight) {
+      header.classList.add('hkv-header-light');
+    } else {
+      header.classList.remove('hkv-header-light');
+    }
+    updateLogo(isLight);
+  }
+
+  /* ===== 이벤트 ===== */
+  window.addEventListener('scroll', checkHeader, { passive: true });
+  window.addEventListener('resize', function () {
+    cacheSections();
+    checkHeader();
+  });
+
+  /* ===== 초기화 ===== */
+  function init() {
+    cacheSections();
+    initLogo();
+    checkHeader();
+  }
+
+  if (document.readyState === 'complete') {
+    init();
+  } else {
+    window.addEventListener('load', init);
+  }
+
+})();
+</script>
